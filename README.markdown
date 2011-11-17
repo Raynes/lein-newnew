@@ -14,7 +14,7 @@ Templates are very simple. If you wanted to create a template called 'blah', you
 
 ## Usage
 
-    lein plugin install lein-newnew 0.1.0
+    lein plugin install lein-newnew 0.1.1
     lein new foo
     lein new plugin lein-foo
     
