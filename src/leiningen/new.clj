@@ -10,6 +10,6 @@ argument is treated as if it were the name of the project."
   ([template & args]
      (let [sym (symbol (str "leiningen.new." template))]
        (try (require sym)
+            (apply (resolve (symbol (str sym "/" template))) args)
             (catch FileNotFoundException _
-              (println "Could not find template" template "on the classpath.")))
-       (apply (resolve (symbol (str sym "/" template))) args))))
+              (println "Could not find template" template "on the classpath."))))))
