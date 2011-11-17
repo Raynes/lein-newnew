@@ -8,6 +8,10 @@ By default, it includes three templates: default, plugin, and template. 'default
 
 TEMPLATES! WOOT!
 
+## Writing Templates
+
+Templates are very simple. If you wanted to create a template called 'blah', you'd just need to have a file on the classpath at `leiningen/new/blah.clj`. Any mustache templates you intend to use would go in `leiningen/new/blah/`. There isn't really much to talk about. Check out `leiningen.new.templates` for the user-level template-writing API, and check out the simple included templates for examples. When you're ready to write your template, use `lein new template <name>` and hack away!
+
 ## Usage
 
     lein plugin install lein-newnew 0.1.0
