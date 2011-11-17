@@ -1,5 +1,5 @@
-(defproject lein-newnew "0.1.0"
+(defproject lein-newnew "0.1.1"
   :description "A Leiningen plugin for generating new projects based on templates."
   :dependencies [[org.clojure/clojure "1.2.1"]
-                 [org.clojars.rayne/clostache "0.7.0-SNAPSHOT"]]
+                 [stencil "0.2.0"]]
   :eval-in-leiningen true)

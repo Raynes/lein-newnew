@@ -1,7 +1,7 @@
 (ns leiningen.new.templates
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
-            [clostache.parser :as parser]))
+            [stencil.core :as stencil]))
 
 (defn slurp-resource
   "Reads the contents of a file on the classpath."
@@ -13,7 +13,7 @@
   [s]
   (string/replace s #"-" "_"))
 
-(def render-text parser/render)
+(def render-text stencil/render-string)
 
 (defn renderer
   "Create a renderer function that looks for mustache templates in the
@@ -32,8 +32,9 @@
 (defn ->files
   "Generate a file with content. path can be a java.io.File or string.
    It will be turned into a File regardless. Any parent directories will
-   be created automatically."
-  [name data & paths]
+   be created automatically. Data should include a key for :name so that
+   the project is created in the correct directory"
+  [{:keys [name] :as data} & paths]
   (.mkdir (io/file name))
   (doseq [path paths]
     (if (string? path)

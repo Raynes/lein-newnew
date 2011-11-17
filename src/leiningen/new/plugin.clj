@@ -13,7 +13,7 @@
               :unprefixed-name unprefixed
               :sanitized (sanitize unprefixed)}]
     (println (str "Generating a skeleton Leiningen plugin called " name "."))
-    (->files name data
+    (->files data
              ["project.clj" (render "project.clj" data)]
              ["README.md" (render "README.md" data)]
              [".gitignore" (render "gitignore" data)]

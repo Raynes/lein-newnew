@@ -6,6 +6,7 @@
 (defn {{name}}
   "FIXME: write documentation"
   [name]
-  (let [data {:name name}]
-    (->files name data
-             ["foo.clj" (render "foo.clj" data)])))
+  (let [data {:name name
+              :sanitized (sanitize name)}]
+    (->files data
+             ["src/{{placeholder}}/foo.clj" (render "foo.clj" data)])))
