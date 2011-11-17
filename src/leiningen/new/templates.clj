@@ -17,13 +17,14 @@
 
 (defn renderer
   "Create a renderer function that looks for mustache templates in the
-   right place given the name of your template."
+   right place given the name of your template. If no data is passed, the
+   file is simply slurped."
   [name]
-  (fn [template data]
-    (render-text
-     (slurp-resource
-      (io/file "leiningen" "new" name template))
-     data)))
+  (fn [template & [data]]
+    (let [text (slurp-resource (io/file "leiningen" "new" name template))]
+      (if data
+        (render-text text data)
+        text))))
 
 (defn- template-path [name path data]
   (io/file name (render-text path data)))
