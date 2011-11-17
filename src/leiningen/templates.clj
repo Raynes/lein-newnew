@@ -6,7 +6,7 @@
   "List available 'lein new' templates"
   []
   (println "List of 'lein new' templates on the classpath:")
-  (doseq [n (remove #{'leiningen.new.templates}
+  (doseq [n (remove '#{leiningen.new.templates leiningen.new}
                     (namespaces-matching "leiningen.new"))]
     (require n)
     (let [n-meta (meta
