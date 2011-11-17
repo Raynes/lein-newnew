@@ -35,11 +35,12 @@
    be created automatically. Data should include a key for :name so that
    the project is created in the correct directory"
   [{:keys [name] :as data} & paths]
-  (.mkdir (io/file name))
-  (doseq [path paths]
-    (if (string? path)
-      (.mkdirs (template-path name path data))
-      (let [[path content] path
-            path (template-path name path data)]
-        (.mkdirs (.getParentFile path))
-        (spit path content)))))
+  (if (.mkdir (io/file name))
+    (doseq [path paths]
+      (if (string? path)
+        (.mkdirs (template-path name path data))
+        (let [[path content] path
+              path (template-path name path data)]
+          (.mkdirs (.getParentFile path))
+          (spit path content))))
+    (println "Directory" name "already exists!")))
