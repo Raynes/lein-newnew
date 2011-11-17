@@ -17,6 +17,8 @@ Templates are very simple. If you wanted to create a template called 'blah', you
     lein plugin install lein-newnew 0.1.0
     lein new foo
     lein new plugin lein-foo
+    
+This plugin **requires** Leiningen 1.6.2 or later. Please confirm that you have this version by running `lein version` before installing the plugin. If you install the plugin on an older version (not sure how old it has to be to cause problems), you'll probably need to uninstall the plugin and then reinstall it after upgrading. Otherwise, `lein templates` throws exceptions.
 
 ## License
 
