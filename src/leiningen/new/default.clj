@@ -11,8 +11,8 @@
               :sanitized (sanitize name)}]
     (println "Generating a project called" name "based on the 'default' template.")
     (->files name data
-             "project.clj" (render "project.clj" data)
-             "README.md" (render "README.md" data)
-             ".gitignore" (render "gitignore" data)
-             "src/{{sanitized}}/core.clj" (render "core.clj" data)
-             "test/{{sanitized}}/core_test.clj" (render "test.clj" data))))
+             ["project.clj" (render "project.clj" data)]
+             ["README.md" (render "README.md" data)]
+             [".gitignore" (render "gitignore" data)]
+             ["src/{{sanitized}}/core.clj" (render "core.clj" data)]
+             ["test/{{sanitized}}/core_test.clj" (render "test.clj" data)])))

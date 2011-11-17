@@ -14,7 +14,7 @@
               :sanitized (sanitize unprefixed)}]
     (println (str "Generating a skeleton Leiningen plugin called " name "."))
     (->files name data
-             "project.clj" (render "project.clj" data)
-             "README.md" (render "README.md" data)
-             ".gitignore" (render "gitignore" data)
-             "src/leiningen/{{sanitized}}.clj" (render "name.clj" data))))
+             ["project.clj" (render "project.clj" data)]
+             ["README.md" (render "README.md" data)]
+             [".gitignore" (render "gitignore" data)]
+             ["src/leiningen/{{sanitized}}.clj" (render "name.clj" data)])))
