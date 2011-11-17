@@ -2,7 +2,9 @@
 
 This plugin is the future replacement of Leiningen's 'new' task. It is extensible via templates, and has a simple API for creating them. With this new task, you can create templates for and generate any sort of project scaffolding you can imagine, as simple or complex as you like.
 
-By default, it includes two templates: 'default' and 'plugin'. 'default' is the same as what Leiningen's old 'new' task spits out, while 'plugin' generates a skeleton Leiningen plugin project.
+By default, it includes three templates: default, plugin, and template. 'default' is the same as what Leiningen's old 'new' task spits out, while 'plugin' generates a skeleton Leiningen plugin project. 'template' is a very meta template for creating new templates!
+
+TEMPLATES! WOOT!
 
 ## Usage
 
