@@ -18,7 +18,7 @@ Templates are just maven artifacts. Particularly, they need only be on the class
 
 ## Usage
 
-    lein plugin install lein-newnew 0.1.1
+    lein plugin install lein-newnew 0.1.2
     lein new foo
     lein new plugin lein-foo
     
