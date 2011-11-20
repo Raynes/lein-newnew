@@ -1,6 +1,19 @@
 (ns leiningen.new
+  "Generate project scaffolding based on a template."
   (:import java.io.FileNotFoundException))
 
+;; A lein-newnew template is actually just a function that generates files and
+;; directories. We have a bit of convention: we expect that each template is on
+;; the classpath and is based in a .clj file at `leiningen/new/`. Making this
+;; assumption, a user can simply give us the name of the template he wishes to
+;; use and we can `require` it without searching the classpath for it or doing
+;; other time consuming things.
+;;
+;; Since our templates are just function calls just like Leiningen tasks, we can
+;; also expect that a template generation function also be named the same as the
+;; last segment of its namespace. This is what we call to generate the project.
+;; If the template's namespace is not on the classpath, we can just catch the
+;; FileNotFoundException and print a nice safe message.
 (defn new
   "Generate scaffolding for a new project based on a template.
 
