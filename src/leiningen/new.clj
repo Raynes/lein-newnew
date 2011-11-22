@@ -14,7 +14,7 @@
 ;; last segment of its namespace. This is what we call to generate the project.
 ;; If the template's namespace is not on the classpath, we can just catch the
 ;; FileNotFoundException and print a nice safe message.
-(defn new
+(defn ^{:no-project-needed true} new
   "Generate scaffolding for a new project based on a template.
 
 If only one argument is passed, the default template is used and the
