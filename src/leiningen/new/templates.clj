@@ -55,7 +55,8 @@
    file is simply slurped and the content returned unchanged."
   [name]
   (fn [template & [data]]
-    (let [text (slurp-resource (io/file "leiningen" "new" name template))]
+    (let [text (slurp-resource
+                 (io/file "leiningen" "new" name (sanitize template)))]
       (if data
         (render-text text data)
         text))))
