@@ -16,12 +16,20 @@
 ;; FileNotFoundException and print a nice safe message.
 (defn new*
   ([project project-name] (new* project "default" project-name))
-  ([project template & args]
-   (let [sym (symbol (str "leiningen.new." template))]
-     (if (try (require sym)
-           (catch FileNotFoundException _ true))
-       (println "Could not find template" template "on the classpath.")
-       (apply (resolve (symbol (str sym "/" template))) args)))))
+  ([project template name & args]
+   (if (and (.endsWith name "jure")
+            (not (System/getenv "LEIN_ALLOW_JURE_NAMES")))
+     (println "Looks like you're tring to create a project with a name"
+              "ending in 'jure'. Please, in the name of all things holy,"
+              "do not create a new project with a crappy 'pun' name. It"
+              "has been done to death. Now, if you've got something ironic"
+              "and clever in mind, set the LEIN_ALLOW_JURE_NAMES environment"
+              "variable to disable this message.")
+     (let [sym (symbol (str "leiningen.new." template))]
+       (if (try (require sym)
+             (catch FileNotFoundException _ true))
+         (println "Could not find template" template "on the classpath.")
+         (apply (resolve (symbol (str sym "/" template))) name args))))))
 
 (defn ^{:no-project-needed true}
   new
