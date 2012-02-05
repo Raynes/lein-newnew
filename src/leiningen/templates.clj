@@ -11,17 +11,19 @@
 ;; just look up these templates on the classpath, require them, and then
 ;; get the metadata off of that function to list the names and docs
 ;; for all of the available templates.
-(defn ^{:help-arglists '([])} templates
+(defn ^{:no-project-needed true
+        :help-arglists '([])} templates
   "List available 'lein new' templates"
-  []
-  (println "List of 'lein new' templates on the classpath:")
-  ;; There are things on the classpath at `leiningen.new` that we
-  ;; don't care about here. We could use a regex here, but meh.
-  (doseq [n (remove '#{leiningen.new.templates leiningen.new}
-                    (namespaces-matching "leiningen.new"))]
-    (require n)
-    (let [n-meta (meta
-                  (ns-resolve (the-ns n)
-                              (symbol (last (.split (str n) "\\.")))))]
-      (println (str (:name n-meta) ":")
-               (or (:doc n-meta) "No documentation available.")))))
+  ([] 
+   (println "List of 'lein new' templates on the classpath:") 
+   ;; There are things on the classpath at `leiningen.new` that we
+   ;; don't care about here. We could use a regex here, but meh.
+   (doseq [n (remove '#{leiningen.new.templates leiningen.new}
+                     (namespaces-matching "leiningen.new"))]
+     (require n)
+     (let [n-meta (meta
+                    (ns-resolve (the-ns n)
+                                (symbol (last (.split (str n) "\\.")))))]
+       (println (str (:name n-meta) ":")
+                (or (:doc n-meta) "No documentation available.")))))
+  ([project] (templates)))
