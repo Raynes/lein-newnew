@@ -11,7 +11,8 @@
                      name)
         data {:name name
               :unprefixed-name unprefixed
-              :sanitized (sanitize unprefixed)}]
+              :sanitized (sanitize unprefixed)
+              :year (year)}]
     (println (str "Generating a skeleton Leiningen plugin called " name "."))
     (->files data
              ["project.clj" (render "project.clj" data)]

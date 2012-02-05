@@ -8,7 +8,8 @@
   "A basic and general project layout."
   [name]
   (let [data {:name name
-              :sanitized (sanitize name)}]
+              :sanitized (sanitize name)
+              :year (year)}]
     (println "Generating a project called" name "based on the 'default' template.")
     (->files data
              ["project.clj" (render "project.clj" data)]

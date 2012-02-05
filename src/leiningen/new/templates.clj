@@ -27,6 +27,10 @@
   [s]
   (string/replace s #"-" "_"))
 
+(defn year
+  "Get the current year. Useful for setting copyright years and such."
+  [] (+ (.getYear (java.util.Date.)) 1900))
+
 ;; It'd be silly to expect people to pull in stencil just to render
 ;; a mustache string. We can just provide this function instead. In
 ;; doing so, it is much more likely that a template author will have

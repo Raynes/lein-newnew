@@ -8,6 +8,6 @@ FIXME
 
 ## License
 
-Copyright (C) 2011 FIXME
+Copyright (C) {{year}} FIXME
 
 Distributed under the Eclipse Public License, the same as Clojure.

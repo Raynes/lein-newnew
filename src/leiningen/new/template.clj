@@ -8,7 +8,8 @@
   [name]
   (let [data {:name name
               :sanitized (sanitize name)
-              :placeholder "{{sanitized}}"}]
+              :placeholder "{{sanitized}}"
+              :year (year)}]
     (println "Generating skeleton 'lein new' template project.")
     (->files data
              ["README.md" (render "README.md" data)]
