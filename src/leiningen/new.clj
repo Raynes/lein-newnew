@@ -44,6 +44,7 @@
 If only one argument is passed, the default template is used and the
 argument is treated as if it were the name of the project."
   [& args]
-  (if (map? (first args))
-    (apply new* args)
-    (apply new* nil args)))
+  (let [project (first args)]
+    (if (or (map? project) (nil? project))
+      (apply new* args)
+      (apply new* nil args))))
