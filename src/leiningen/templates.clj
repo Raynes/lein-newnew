@@ -1,6 +1,12 @@
 (ns leiningen.templates
-  "List templates on the classpath."
-  (:use [leiningen.util.ns :only [namespaces-matching]]))
+  "List templates on the classpath.")
+
+;; Hack for lein 2 and 1 compatibility.
+(try 
+  (use '[leiningen.util.ns :only [namespaces-matching]])
+  (catch java.io.FileNotFoundException _
+    (use '[leiningen.core.ns :only [namespaces-matching]])))
+
 
 ;; Since we have our convention of templates always being at
 ;; `leiningen.new.<template>`, we can easily search the classpath
