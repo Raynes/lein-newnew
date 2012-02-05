@@ -2,6 +2,13 @@
   "Generate project scaffolding based on a template."
   (:import java.io.FileNotFoundException))
 
+(defn resolve-template [name]
+  (let [sym (symbol (str "leiningen.new." name))]
+    (if (try (require sym)
+          (catch FileNotFoundException _ true))
+      (println "Could not find template" name "on the classpath.")
+      (resolve (symbol (str sym "/" name))))))
+
 ;; A lein-newnew template is actually just a function that generates files and
 ;; directories. We have a bit of convention: we expect that each template is on
 ;; the classpath and is based in a .clj file at `leiningen/new/`. Making this
@@ -25,11 +32,8 @@
               "has been done to death. Now, if you've got something ironic"
               "and clever in mind, set the LEIN_ALLOW_JURE_NAMES environment"
               "variable to disable this message.")
-     (let [sym (symbol (str "leiningen.new." template))]
-       (if (try (require sym)
-             (catch FileNotFoundException _ true))
-         (println "Could not find template" template "on the classpath.")
-         (apply (resolve (symbol (str sym "/" template))) name args))))))
+     (when-let [f (resolve-template template)]
+       (apply f name args)))))
 
 (defn ^{:no-project-needed true}
   new
