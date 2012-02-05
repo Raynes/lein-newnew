@@ -35,13 +35,14 @@
      (when-let [f (resolve-template template)]
        (apply f name args)))))
 
-(defn ^{:no-project-needed true}
+(defn ^{:no-project-needed true
+        :help-arglists '([project project-name]
+                         [project template project-name & args])}
   new
   "Generate scaffolding for a new project based on a template.
 
 If only one argument is passed, the default template is used and the
 argument is treated as if it were the name of the project."
-  {:arglists '([project project-name] [project template & args])} 
   [& args]
   (if (map? (first args))
     (apply new* args)
