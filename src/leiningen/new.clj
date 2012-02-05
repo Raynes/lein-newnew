@@ -14,15 +14,23 @@
 ;; last segment of its namespace. This is what we call to generate the project.
 ;; If the template's namespace is not on the classpath, we can just catch the
 ;; FileNotFoundException and print a nice safe message.
-(defn ^{:no-project-needed true} new
+(defn new*
+  ([project project-name] (new* project "default" project-name))
+  ([project template & args]
+   (let [sym (symbol (str "leiningen.new." template))]
+     (if (try (require sym)
+           (catch FileNotFoundException _ true))
+       (println "Could not find template" template "on the classpath.")
+       (apply (resolve (symbol (str sym "/" template))) args)))))
+
+(defn ^{:no-project-needed true}
+  new
   "Generate scaffolding for a new project based on a template.
 
 If only one argument is passed, the default template is used and the
 argument is treated as if it were the name of the project."
-  ([project-name] (leiningen.new/new "default" project-name))
-  ([template & args]
-     (let [sym (symbol (str "leiningen.new." template))]
-       (if (try (require sym)
-                (catch FileNotFoundException _ true))
-         (println "Could not find template" template "on the classpath.")
-         (apply (resolve (symbol (str sym "/" template))) args)))))
+  {:arglists '([project project-name] [project template & args])} 
+  [& args]
+  (if (map? (first args))
+    (apply new* args)
+    (apply new* nil args)))
