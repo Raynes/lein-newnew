@@ -1,3 +1,2 @@
 (defproject {{name}} "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :dependencies [[clojure "1.2.1"]])
+  :description "FIXME: write description")
