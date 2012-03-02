@@ -1,6 +1,8 @@
 # {{name}}
 
-I'm an app. I sure don't do much.
+I'm an app. Or maybe I'm a library? I haven't decided yet. 
+
+The choice is up to you!
 
 ## Usage
 
