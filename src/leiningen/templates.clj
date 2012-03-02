@@ -1,12 +1,6 @@
 (ns leiningen.templates
-  "List templates on the classpath.")
-
-;; Hack for lein 2 and 1 compatibility.
-(try 
-  (use '[leiningen.util.ns :only [namespaces-matching]])
-  (catch java.io.FileNotFoundException _
-    (use '[leiningen.core.ns :only [namespaces-matching]])))
-
+  "List templates on the classpath."
+  (:require [bultitude.core :as bultitude]))
 
 ;; Since we have our convention of templates always being at
 ;; `leiningen.new.<template>`, we can easily search the classpath
@@ -17,19 +11,20 @@
 ;; just look up these templates on the classpath, require them, and then
 ;; get the metadata off of that function to list the names and docs
 ;; for all of the available templates.
-(defn ^{:no-project-needed true
-        :help-arglists '([])} templates
+
+(defn ^{:no-project-needed true :help-arglists '([])}
+  templates
   "List available 'lein new' templates"
-  ([] 
-   (println "List of 'lein new' templates on the classpath:") 
-   ;; There are things on the classpath at `leiningen.new` that we
-   ;; don't care about here. We could use a regex here, but meh.
-   (doseq [n (remove '#{leiningen.new.templates leiningen.new}
-                     (namespaces-matching "leiningen.new"))]
-     (require n)
-     (let [n-meta (meta
-                    (ns-resolve (the-ns n)
-                                (symbol (last (.split (str n) "\\.")))))]
-       (println (str (:name n-meta) ":")
-                (or (:doc n-meta) "No documentation available.")))))
-  ([project] (templates)))
+  ([]
+     (println "List of 'lein new' templates on the classpath:")
+     (doseq [n (bultitude/namespaces-on-classpath :prefix "leiningen.new.")
+             ;; There are things on the classpath at `leiningen.new` that we
+             ;; don't care about here. We could use a regex here, but meh.
+             :when (not= n 'leiningen.new.templates)]
+       (require n)
+       (let [n-meta (-> (the-ns n)
+                        (ns-resolve (symbol (last (.split (str n) "\\."))))
+                        (meta))]
+         (println (:name n-meta) "-"
+                  (:doc n-meta "No documentation available.")))))
+  ([_] (templates)))
