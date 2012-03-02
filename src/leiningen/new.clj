@@ -76,7 +76,7 @@
 If only one argument is passed, the default template is used and the
 argument is treated as if it were the name of the project."
   [& args]
-  (let [args (if (map? (first args))
+  (let [args (if (or (map? (first args)) (nil? (first args)))
                (rest args)
                args)]
     (cond (= ":list" (second args)) (list)
