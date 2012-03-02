@@ -1,6 +1,6 @@
 # lein-newnew
 
-This plugin will replace Leiningen's 'new' task in Leiningen 2.0. It is currently in the experimental stage, but is absolutely usable if you want to give it a go. Be sure to send me feedback.
+This plugin provides the 'new' task for creating fresh project skeletons from Leiningen 2.0, but is usable from Leiningen 1.x as well.
 
 It is extensible via templates and has a simple API for creating them. With this new task, you can create templates for any sort of project scaffolding you can imagine, as simple or complex as you like.
 
@@ -18,16 +18,18 @@ While developing a template, if you're in the template project lein-newnew will 
 
 Templates are just maven artifacts. Particularly, they need only be on the classpath when 'lein new' is called. So, as an awesome side-effect, you can just put your templates in a jar and toss them on clojars and have people install them like normal Leiningen plugins.
 
+TODO: allow templates to be fetched dynamically on-demand if pomegranate is present.
+
 ## Usage
 
-    lein plugin install lein-newnew 0.1.2
-    lein new foo
-    lein new plugin lein-foo
+    $ lein plugin install lein-newnew 0.1.2
+    $ lein new foo
+    $ lein new plugin lein-foo
     
 This plugin **requires** Leiningen 1.6.2 or later. Please confirm that you have this version by running `lein version` before installing the plugin. If you install the plugin on an older version (not sure how old it has to be to cause problems), you'll probably need to uninstall the plugin and then reinstall it after upgrading. Otherwise, `lein templates` throws exceptions.
 
 ## License
 
-Copyright (C) 2011 Anthony Grimes
+Copyright © 2011 Anthony Grimes
 
 Distributed under the Eclipse Public License, the same as Clojure.
