@@ -25,9 +25,9 @@
 ;; FileNotFoundException and print a nice safe message.
 
 (defn create
-  ([project project-name]
-     (create project "default" project-name))
-  ([project template name & args]
+  ([name]
+     (create "default" name))
+  ([template name & args]
      (if (and (re-find #"(?i)(?<!(clo|compo))jure" name)
               (not (System/getenv "LEIN_IRONIC_JURE")))
        (println "Sorry, names based on non-ironic *jure puns are not allowed.\n"
@@ -77,8 +77,8 @@ If only one argument is passed, the default template is used and the
 argument is treated as if it were the name of the project."
   [& args]
   (let [args (if (map? (first args))
-               args
-               (cons nil args))]
+               (rest args)
+               args)]
     (cond (= ":list" (second args)) (list)
           (= ":show" (second args)) (show (nth args 2))
           :else (apply create args))))
