@@ -22,7 +22,7 @@ TODO: allow templates to be fetched dynamically on-demand if pomegranate is pres
 
 ## Usage
 
-    $ lein plugin install lein-newnew 0.1.2
+    $ lein plugin install lein-newnew 0.2.3
     $ lein new foo
     $ lein new plugin lein-foo
     
@@ -30,6 +30,6 @@ This plugin **requires** Leiningen 1.6.2 or later. Please confirm that you have 
 
 ## License
 
-Copyright © 2011 Anthony Grimes
+Copyright © 2011-2012 Anthony Grimes
 
 Distributed under the Eclipse Public License, the same as Clojure.
