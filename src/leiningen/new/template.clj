@@ -1,12 +1,11 @@
 (ns leiningen.new.template
-  (:use [leiningen.new.templates :only [renderer sanitize year render]]))
-
-(def render (renderer "template"))
+  (:use [leiningen.new.templates :only [renderer sanitize year ->files]]))
 
 (defn template
   "A meta-template for 'lein new' templates."
   [name]
-  (let [data {:name name
+  (let [render (renderer "template")
+        data {:name name
               :sanitized (sanitize name)
               :placeholder "{{sanitized}}"
               :year (year)}]

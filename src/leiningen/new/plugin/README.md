@@ -16,7 +16,7 @@ Put `[{{name}} "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your project.clj
 
 FIXME: and add an example usage that actually makes sense:
 
-    $ lein {{unprefixed}}
+    $ lein {{unprefixed-name}}
 
 ## License
 

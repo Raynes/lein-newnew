@@ -1,13 +1,12 @@
 (ns leiningen.new.default
   "Generate a basic project."
-  (:use [leiningen.new.templates :only [renderer sanitize year render]]))
-
-(def render (renderer "default"))
+  (:use [leiningen.new.templates :only [renderer sanitize year ->files]]))
 
 (defn default
   "A basic and general project layout."
   [name]
-  (let [data {:name name
+  (let [render (renderer "default")
+        data {:name name
               :sanitized (sanitize name)
               :year (year)}]
     (println "Generating a project called" name "based on the 'default' template.")

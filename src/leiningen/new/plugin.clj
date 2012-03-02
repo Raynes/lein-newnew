@@ -1,12 +1,11 @@
 (ns leiningen.new.plugin
-  (:use [leiningen.new.templates :only [renderer sanitize year render]]))
-
-(def render (renderer "plugin"))
+  (:use [leiningen.new.templates :only [renderer sanitize year ->files]]))
 
 (defn plugin
   "A leiningen plugin project."
   [name]
-  (let [unprefixed (if (.startsWith name "lein-")
+  (let [render (renderer "plugin")
+        unprefixed (if (.startsWith name "lein-")
                      (subs name 5)
                      name)
         data {:name name
