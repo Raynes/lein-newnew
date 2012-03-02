@@ -1,6 +1,6 @@
 (ns leiningen.new.default
   "Generate a basic project."
-  (:use leiningen.new.templates))
+  (:use [leiningen.new.templates :only [renderer sanitize year render]]))
 
 (def render (renderer "default"))
 

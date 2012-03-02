@@ -1,5 +1,5 @@
 (ns leiningen.new.plugin
-  (:use leiningen.new.templates))
+  (:use [leiningen.new.templates :only [renderer sanitize year render]]))
 
 (def render (renderer "plugin"))
 
@@ -13,7 +13,7 @@
               :unprefixed-name unprefixed
               :sanitized (sanitize unprefixed)
               :year (year)}]
-    (println (str "Generating a skeleton Leiningen plugin called " name "."))
+    (println (str "Generating a fresh Leiningen plugin called " name "."))
     (->files data
              ["project.clj" (render "project.clj" data)]
              ["README.md" (render "README.md" data)]
