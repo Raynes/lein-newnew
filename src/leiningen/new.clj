@@ -5,7 +5,7 @@
 (defn resolve-template [name]
   (let [sym (symbol (str "leiningen.new." name))]
     (if (try (require sym)
-          (catch FileNotFoundException _ true))
+             (catch FileNotFoundException _ true))
       (println "Could not find template" name "on the classpath.")
       (resolve (symbol (str sym "/" name))))))
 
@@ -21,17 +21,16 @@
 ;; last segment of its namespace. This is what we call to generate the project.
 ;; If the template's namespace is not on the classpath, we can just catch the
 ;; FileNotFoundException and print a nice safe message.
+
 (defn new*
-  ([project project-name] (new* project "default" project-name))
+  ([project project-name]
+     (new* project "default" project-name))
   ([project template name & args]
-   (if (and (.endsWith name "jure")
-            (not (System/getenv "LEIN_ALLOW_JURE_NAMES")))
-     (println "Looks like you're tring to create a project with a name"
-              "ending in 'jure'. Please, in the name of all things holy,"
-              "do not create a new project with a crappy 'pun' name. It"
-              "has been done to death. Now, if you've got something ironic"
-              "and clever in mind, set the LEIN_ALLOW_JURE_NAMES environment"
-              "variable to disable this message.")
+   (if (and (re-find #"(?i)(?<!(clo|compo))jure" name)
+            (not (System/getenv "LEIN_IRONIC_JURE")))
+     (println "Sorry, names based on non-ironic *jure puns are not allowed.\n"
+              "If you intend to use this name ironically, please set the\n"
+              "LEIN_IRONIC_JURE environment variable and try again.")
      (when-let [f (resolve-template template)]
        (apply f name args)))))
 
