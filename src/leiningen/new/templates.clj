@@ -13,6 +13,14 @@
             [clojure.string :as string]
             [stencil.core :as stencil]))
 
+(defn- normalize-project-name
+  "Returns project name from (possibly group-qualified) name:
+
+   mygroup/myproj => myproj
+   myproj         => myproj"
+  [^String s]
+  (last (string/split s #"/")))
+
 ;; It is really easy to get resources off of the classpath in Clojure
 ;; these days.
 (defn slurp-resource
@@ -87,12 +95,13 @@
    be created automatically. Data should include a key for :name so that
    the project is created in the correct directory"
   [{:keys [name] :as data} & paths]
-  (if (.mkdir (io/file name))
+  (let [normalized-name (normalize-project-name name)]
+  (if (.mkdir (io/file normalized-name))
     (doseq [path paths]
       (if (string? path)
-        (.mkdirs (template-path name path data))
+        (.mkdirs (template-path normalized-name path data))
         (let [[path content] path
-              path (template-path name path data)]
+              path (template-path normalized-name path data)]
           (.mkdirs (.getParentFile path))
           (spit path content))))
-    (println "Directory" name "already exists!")))
+    (println "Could not create directory " name ". Maybe it already exists?"))))
