@@ -22,7 +22,7 @@ TODO: allow templates to be fetched dynamically on-demand if pomegranate is pres
 
 ## Usage
 
-    $ lein plugin install lein-newnew 0.2.3
+    $ lein plugin install lein-newnew 0.2.5
     $ lein new foo
     $ lein new plugin lein-foo
     
