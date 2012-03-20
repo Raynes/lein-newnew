@@ -96,12 +96,12 @@
    the project is created in the correct directory"
   [{:keys [name] :as data} & paths]
   (let [normalized-name (normalize-project-name name)]
-  (if (.mkdir (io/file normalized-name))
-    (doseq [path paths]
-      (if (string? path)
-        (.mkdirs (template-path normalized-name path data))
-        (let [[path content] path
-              path (template-path normalized-name path data)]
-          (.mkdirs (.getParentFile path))
-          (spit path content))))
-    (println "Could not create directory " name ". Maybe it already exists?"))))
+    (if (.mkdir (io/file normalized-name))
+      (doseq [path paths]
+        (if (string? path)
+          (.mkdirs (template-path normalized-name path data))
+          (let [[path content] path
+                path (template-path normalized-name path data)]
+            (.mkdirs (.getParentFile path))
+            (spit path content))))
+      (println "Could not create directory " name ". Maybe it already exists?"))))
