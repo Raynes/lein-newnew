@@ -35,6 +35,17 @@
   [s]
   (string/replace s #"-" "_"))
 
+(defn sanitize-ns
+  "Returns project namespace name from (possibly group-qualified) project name:
+
+   mygroup/myproj  => mygroup.myproj
+   myproj          => myproj
+   mygroup/my_proj => mygroup.my-proj"
+  [^String s]
+  (-> s
+      (string/replace #"/" ".")
+      (string/replace #"_" "-")))
+
 (defn year
   "Get the current year. Useful for setting copyright years and such."
   [] (+ (.getYear (java.util.Date.)) 1900))
