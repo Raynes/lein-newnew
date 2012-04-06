@@ -4,12 +4,31 @@
   (:require [bultitude.core :as bultitude])
   (:import java.io.FileNotFoundException))
 
+(defn- fake-project [name]
+  {:templates [[(symbol name "lein-template") "(0.0.0,)"]]
+   :repositories {"clojars" {:url "http://clojars.org/repo/"}
+                  "central" {:url "http://repo1.maven.org/maven2"}}})
+
+(defn resolve-remote-template [name sym]
+  (if-let [get-dep (resolve 'leiningen.core.classpath/resolve-dependencies)]
+    (try (get-dep :templates (fake-project name) :add-classpath? true)
+         (require sym)
+         true
+         (catch Exception _))))
+
+(defn abort [name]
+  (let [abort (or (resolve 'leiningen.core.main/abort)
+                  (resolve 'leiningen.core/abort))]
+    (abort "Could not find template" name "on the classpath.")))
+
 (defn resolve-template [name]
   (let [sym (symbol (str "leiningen.new." name))]
     (if (try (require sym)
-             (catch FileNotFoundException _ true))
-      (println "Could not find template" name "on the classpath.")
-      (resolve (symbol (str sym "/" name))))))
+             true
+             (catch FileNotFoundException _
+               (resolve-remote-template name sym)))
+      (resolve (symbol (str sym "/" name)))
+      (abort name))))
 
 ;; A lein-newnew template is actually just a function that generates files and
 ;; directories. We have a bit of convention: we expect that each template is on
@@ -33,8 +52,7 @@
        (println "Sorry, names based on non-ironic *jure puns are not allowed.\n"
                 "If you intend to use this name ironically, please set the\n"
                 "LEIN_IRONIC_JURE environment variable and try again.")
-       (when-let [f (resolve-template template)]
-         (apply f name args)))))
+       (apply (resolve-template template) name args))))
 
 ;; Since we have our convention of templates always being at
 ;; `leiningen.new.<template>`, we can easily search the classpath
