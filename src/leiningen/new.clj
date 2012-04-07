@@ -35,13 +35,12 @@
 ;; the classpath and is based in a .clj file at `leiningen/new/`. Making this
 ;; assumption, a user can simply give us the name of the template he wishes to
 ;; use and we can `require` it without searching the classpath for it or doing
-;; other time consuming things.
+;; other time consuming things. If this namespace isn't found and we are
+;; running Leiningen 2, we can resolve it via pomegranate first.
 ;;
 ;; Since our templates are just function calls just like Leiningen tasks, we can
 ;; also expect that a template generation function also be named the same as the
 ;; last segment of its namespace. This is what we call to generate the project.
-;; If the template's namespace is not on the classpath, we can just catch the
-;; FileNotFoundException and print a nice safe message.
 
 (defn create
   ([name]
@@ -65,38 +64,38 @@
 ;; for all of the available templates.
 
 (defn list []
-  (println "List of 'lein new' templates on the classpath:")
-  (doseq [n (bultitude/namespaces-on-classpath :prefix "leiningen.new.")
-          ;; There are things on the classpath at `leiningen.new` that we
-          ;; don't care about here. We could use a regex here, but meh.
-          :when (not= n 'leiningen.new.templates)]
-    (require n)
-    (let [n-meta (-> (the-ns n)
-                     (ns-resolve (symbol (last (.split (str n) "\\."))))
-                     (meta))]
-      (println " "(:name n-meta) "-"
-               (:doc n-meta "No documentation available.")))))
+  (for [n (bultitude/namespaces-on-classpath :prefix "leiningen.new.")
+        ;; There are things on the classpath at `leiningen.new` that we
+        ;; don't care about here. We could use a regex here, but meh.
+        :when (not= n 'leiningen.new.templates)]
+    (-> (doto n require)
+        (the-ns)
+        (ns-resolve (symbol (last (.split (str n) "\\.")))))))
 
-(defn show [name]
+(defn show
+  "Show details for a given template."
+  [name]
   (let [resolved (meta (resolve-template name))]
     (println (:doc resolved "No documentation available."))
     (println)
     (println "Argument list:" (or (:help-arglists resolved)
                                   (:arglists resolved)))))
 
-;; TODO: document subcommands
 (defn ^{:no-project-needed true
         :help-arglists '[[project project-name]
-                         [project template project-name & args]]}
+                         [project template project-name & args]]
+        :subtasks (list)}
   new
   "Generate scaffolding for a new project based on a template.
 
 If only one argument is passed, the default template is used and the
-argument is treated as if it were the name of the project."
+argument is treated as if it were the name of the project.
+
+Use \":show\" instead of a project name to show template details." 
   [& args]
   (let [args (if (or (map? (first args)) (nil? (first args)))
                (rest args)
                args)]
-    (cond (= ":list" (second args)) (list)
-          (= ":show" (second args)) (show (nth args 2))
-          :else (apply create args))))
+    (if (= ":show" (second args))
+      (show (first args))
+      (apply create args))))
