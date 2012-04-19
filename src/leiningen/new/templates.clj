@@ -25,8 +25,8 @@
 ;; these days.
 (defn slurp-resource
   "Reads the contents of a file on the classpath."
-  [file]
-  (-> file .getPath io/resource io/reader slurp))
+  [resource-path]
+  (-> resource-path io/resource io/reader slurp))
 
 ;; This is so common that it really is necessary to provide a way to do it
 ;; easily.
@@ -74,10 +74,10 @@
    file is simply slurped and the content returned unchanged."
   [name]
   (fn [template & [data]]
-    (let [file (io/file "leiningen" "new" name (sanitize template))]
+    (let [path (string/join "/" ["leiningen" "new" name (sanitize template)])]
       (if data
-        (render-text (slurp-resource file) data)
-        (io/resource (.getPath file))))))
+        (render-text (slurp-resource path) data)
+        (io/resource path)))))
 
 ;; Our file-generating function, `->files` is very simple. We'd like
 ;; to keep it that way. Sometimes you need your file paths to be
