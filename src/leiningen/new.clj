@@ -91,11 +91,12 @@
 If only one argument is passed, the default template is used and the
 argument is treated as if it were the name of the project.
 
-Use \":show\" instead of a project name to show template details." 
+Use \":show\" instead of a project name to show template details."
   [& args]
   (let [args (if (or (map? (first args)) (nil? (first args)))
                (rest args)
                args)]
-    (if (= ":show" (second args))
-      (show (first args))
-      (apply create args))))
+    (cond (empty? args) ((ns-resolve (doto 'leiningen.help require) 'help)
+                         nil "new")
+          (= ":show" (second args)) (show (first args))
+          :else (apply create args))))
