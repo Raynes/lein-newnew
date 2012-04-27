@@ -35,6 +35,16 @@
   [s]
   (string/replace s #"-" "_"))
 
+(defn qualified-name-to-path
+  "Constructs directory structure from fully qualified artifact name:
+
+   myproject         creates src/myproject/* directory
+   mygroup.myproject creates src/mygroup/myproject/* directory
+
+   and so on. Uses platform-specific file separators."
+  [s]
+  (-> s (sanitize) (string/replace #"\." java.io.File/separator)))
+
 (defn sanitize-ns
   "Returns project namespace name from (possibly group-qualified) project name:
 
