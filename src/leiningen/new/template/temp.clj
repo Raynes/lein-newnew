@@ -1,5 +1,5 @@
 (ns leiningen.new.{{name}}
-    (:use leiningen.new.templates))
+  (:use leiningen.new.templates))
 
 (def render (renderer "{{name}}"))
 
