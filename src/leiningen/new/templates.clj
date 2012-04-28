@@ -87,7 +87,7 @@
     (let [path (string/join "/" ["leiningen" "new" name (sanitize template)])]
       (if data
         (render-text (slurp-resource path) data)
-        (io/resource path)))))
+        (io/reader (io/resource path))))))
 
 ;; Our file-generating function, `->files` is very simple. We'd like
 ;; to keep it that way. Sometimes you need your file paths to be
