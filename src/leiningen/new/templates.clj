@@ -13,7 +13,7 @@
             [clojure.string :as string]
             [stencil.core :as stencil]))
 
-(defn- normalize-project-name
+(defn project-name
   "Returns project name from (possibly group-qualified) name:
 
    mygroup/myproj => myproj
@@ -30,12 +30,12 @@
 
 ;; This is so common that it really is necessary to provide a way to do it
 ;; easily.
-(defn sanitize
+(defn sanitize-dir
   "Replace hyphens with underscores."
   [s]
   (string/replace s #"-" "_"))
 
-(defn qualified-name-to-path
+(defn name-to-path
   "Constructs directory structure from fully qualified artifact name:
 
    myproject         creates src/myproject/* directory
@@ -43,7 +43,7 @@
 
    and so on. Uses platform-specific file separators."
   [s]
-  (-> s (sanitize) (string/replace #"\." java.io.File/separator)))
+  (-> s (sanitize-dir) (string/replace #"\." java.io.File/separator)))
 
 (defn sanitize-ns
   "Returns project namespace name from (possibly group-qualified) project name:
@@ -62,14 +62,14 @@
 
 ;; It'd be silly to expect people to pull in stencil just to render
 ;; a mustache string. We can just provide this function instead. In
-;; doing so, it is much more likely that a template author will have
+;; doing so, it is much less likely that a template author will have
 ;; to pull in any external libraries. Though he is welcome to if he
 ;; needs.
 (def render-text stencil/render-string)
 
 ;; Templates are expected to store their mustache template files in
 ;; `leiningen/new/<template>/`. We have our convention of where templates
-;; will be on the classpath  but we still have to know what the template's
+;; will be on the classpath but we still have to know what the template's
 ;; name is in order to know where this directory is and thus where to look
 ;; for mustache template files. Since we're likely to be rendering a number
 ;; of templates, we don't want to have to pass the name of the template every
@@ -84,7 +84,8 @@
    file is simply slurped and the content returned unchanged."
   [name]
   (fn [template & [data]]
-    (let [path (string/join "/" ["leiningen" "new" name (sanitize template)])]
+    (let [path (string/join "/" ["leiningen" "new" name
+                                 (sanitize-dir template)])]
       (if data
         (render-text (slurp-resource path) data)
         (io/reader (io/resource path))))))
@@ -115,13 +116,12 @@
    be created automatically. Data should include a key for :name so that
    the project is created in the correct directory"
   [{:keys [name] :as data} & paths]
-  (let [normalized-name (normalize-project-name name)]
-    (if (.mkdir (io/file normalized-name))
-      (doseq [path paths]
-        (if (string? path)
-          (.mkdirs (template-path normalized-name path data))
-          (let [[path content] path
-                path (template-path normalized-name path data)]
-            (.mkdirs (.getParentFile path))
-            (io/copy content (io/file path)))))
-      (println "Could not create directory " name ". Maybe it already exists?"))))
+  (if (.mkdir (io/file name))
+    (doseq [path paths]
+      (if (string? path)
+        (.mkdirs (template-path name path data))
+        (let [[path content] path
+              path (template-path name path data)]
+          (.mkdirs (.getParentFile path))
+          (io/copy content (io/file path)))))
+    (println "Could not create directory " name ". Maybe it already exists?")))
