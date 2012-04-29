@@ -18,18 +18,14 @@
 
    mygroup/myproj => myproj
    myproj         => myproj"
-  [^String s]
+  [s]
   (last (string/split s #"/")))
 
-;; It is really easy to get resources off of the classpath in Clojure
-;; these days.
 (defn slurp-resource
   "Reads the contents of a file on the classpath."
   [resource-path]
   (-> resource-path io/resource io/reader slurp))
 
-;; This is so common that it really is necessary to provide a way to do it
-;; easily.
 (defn sanitize-dir
   "Replace hyphens with underscores."
   [s]
@@ -43,7 +39,7 @@
 
    and so on. Uses platform-specific file separators."
   [s]
-  (-> s (sanitize-dir) (string/replace #"\." java.io.File/separator)))
+  (-> s sanitize-dir (string/replace #"\." java.io.File/separator)))
 
 (defn sanitize-ns
   "Returns project namespace name from (possibly group-qualified) project name:
@@ -51,7 +47,7 @@
    mygroup/myproj  => mygroup.myproj
    myproj          => myproj
    mygroup/my_proj => mygroup.my-proj"
-  [^String s]
+  [s]
   (-> s
       (string/replace #"/" ".")
       (string/replace #"_" "-")))
