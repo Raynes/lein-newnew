@@ -1,12 +1,12 @@
 (ns leiningen.new.template
-  (:use [leiningen.new.templates :only [renderer sanitize year ->files]]))
+  (:use [leiningen.new.templates :only [renderer name-to-path year ->files]]))
 
 (defn template
   "A meta-template for 'lein new' templates."
   [name]
   (let [render (renderer "template")
         data {:name name
-              :sanitized (sanitize name)
+              :sanitized (name-to-path name)
               :placeholder "{{sanitized}}"
               :year (year)}]
     (println "Generating fresh 'lein new' template project.")

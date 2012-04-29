@@ -1,5 +1,5 @@
 (ns leiningen.new.plugin
-  (:use [leiningen.new.templates :only [renderer sanitize year ->files]]))
+  (:use [leiningen.new.templates :only [renderer name-to-path year ->files]]))
 
 (defn plugin
   "A leiningen plugin project template."
@@ -10,7 +10,7 @@
                      name)
         data {:name name
               :unprefixed-name unprefixed
-              :sanitized (sanitize unprefixed)
+              :sanitized (name-to-path unprefixed)
               :year (year)}]
     (println (str "Generating a fresh Leiningen plugin called " name "."))
     (->files data
