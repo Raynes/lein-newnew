@@ -16,10 +16,10 @@
          true
          (catch Exception _))))
 
-(defn abort [name]
+(defn abort [& args]
   (let [abort (or (resolve 'leiningen.core.main/abort)
                   (resolve 'leiningen.core/abort))]
-    (abort "Could not find template" name "on the classpath.")))
+    (apply abort args)))
 
 (defn resolve-template [name]
   (let [sym (symbol (str "leiningen.new." name))]
@@ -28,7 +28,7 @@
              (catch FileNotFoundException _
                (resolve-remote-template name sym)))
       (resolve (symbol (str sym "/" name)))
-      (abort name))))
+      (abort "Could not find template" name "on the classpath."))))
 
 ;; A lein-newnew template is actually just a function that generates files and
 ;; directories. We have a bit of convention: we expect that each template is on
@@ -41,17 +41,19 @@
 ;; Since our templates are just function calls just like Leiningen tasks, we can
 ;; also expect that a template generation function also be named the same as the
 ;; last segment of its namespace. This is what we call to generate the project.
-
 (defn create
   ([name]
      (create "default" name))
   ([template name & args]
-     (if (and (re-find #"(?i)(?<!(clo|compo))jure" name)
-              (not (System/getenv "LEIN_IRONIC_JURE")))
-       (println "Sorry, names based on non-ironic *jure puns are not allowed.\n"
-                "If you intend to use this name ironically, please set the\n"
-                "LEIN_IRONIC_JURE environment variable and try again.")
-       (apply (resolve-template template) name args))))
+     (cond
+      (and (re-find #"(?i)(?<!(clo|compo))jure" name)
+           (not (System/getenv "LEIN_IRONIC_JURE")))
+       (abort "Sorry, names based on non-ironic *jure puns are not allowed."
+              "\nIf you intend to use this name ironically, please set the"
+              "\nLEIN_IRONIC_JURE environment variable and try again.")
+       (not (symbol? (try (read-string name) (catch Exception _))))
+       (abort "Project names must be valid Clojure symbols.")
+       :else (apply (resolve-template template) name args))))
 
 ;; Since we have our convention of templates always being at
 ;; `leiningen.new.<template>`, we can easily search the classpath
