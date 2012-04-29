@@ -26,7 +26,7 @@
   [resource-path]
   (-> resource-path io/resource io/reader slurp))
 
-(defn sanitize-dir
+(defn sanitize
   "Replace hyphens with underscores."
   [s]
   (string/replace s #"-" "_"))
@@ -39,7 +39,7 @@
 
    and so on. Uses platform-specific file separators."
   [s]
-  (-> s sanitize-dir (string/replace #"\." java.io.File/separator)))
+  (-> s sanitize (string/replace #"\." java.io.File/separator)))
 
 (defn sanitize-ns
   "Returns project namespace name from (possibly group-qualified) project name:
@@ -81,7 +81,7 @@
   [name]
   (fn [template & [data]]
     (let [path (string/join "/" ["leiningen" "new" name
-                                 (sanitize-dir template)])]
+                                 (sanitize template)])]
       (if data
         (render-text (slurp-resource path) data)
         (io/reader (io/resource path))))))
