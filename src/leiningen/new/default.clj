@@ -4,7 +4,11 @@
                                         ->files sanitize-ns name-to-path]]))
 
 (defn default
-  "A general project template."
+  "A general project template.
+
+This template is different from most others in that it supports
+creating a project with a groupId. You can do `lein new foo.bar/baz`
+for example."
   [name]
   (let [render (renderer "default")
         data {:raw-name name
