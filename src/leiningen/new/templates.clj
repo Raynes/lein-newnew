@@ -80,8 +80,7 @@
    file is simply slurped and the content returned unchanged."
   [name]
   (fn [template & [data]]
-    (let [path (string/join "/" ["leiningen" "new" name
-                                 (sanitize template)])]
+    (let [path (string/join "/" ["leiningen" "new" (sanitize name) template])]
       (if data
         (render-text (slurp-resource path) data)
         (io/reader (io/resource path))))))
