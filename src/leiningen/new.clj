@@ -1,6 +1,7 @@
 (ns leiningen.new
   "Generate project scaffolding based on a template."
   (:refer-clojure :exclude [new list])
+  (:use [leiningen.new.templates :only [*dir*]])
   (:require [bultitude.core :as bultitude])
   (:import java.io.FileNotFoundException))
 
@@ -48,12 +49,12 @@
      (cond
       (and (re-find #"(?i)(?<!(clo|compo))jure" name)
            (not (System/getenv "LEIN_IRONIC_JURE")))
-       (abort "Sorry, names based on non-ironic *jure puns are not allowed."
-              "\nIf you intend to use this name ironically, please set the"
-              "\nLEIN_IRONIC_JURE environment variable and try again.")
-       (not (symbol? (try (read-string name) (catch Exception _))))
-       (abort "Project names must be valid Clojure symbols.")
-       :else (apply (resolve-template template) name args))))
+      (abort "Sorry, names based on non-ironic *jure puns are not allowed."
+             "\nIf you intend to use this name ironically, please set the"
+             "\nLEIN_IRONIC_JURE environment variable and try again.")
+      (not (symbol? (try (read-string name) (catch Exception _))))
+      (abort "Project names must be valid Clojure symbols.")
+      :else (apply (resolve-template template) name args))))
 
 ;; Since we have our convention of templates always being at
 ;; `leiningen.new.<template>`, we can easily search the classpath
@@ -97,8 +98,11 @@ Use \":show\" instead of a project name to show template details."
   [& args]
   (let [args (if (or (map? (first args)) (nil? (first args)))
                (rest args)
-               args)]
-    (cond (empty? args) ((ns-resolve (doto 'leiningen.help require) 'help)
-                         nil "new")
-          (= ":show" (second args)) (show (first args))
-          :else (apply create args))))
+               args)
+        [top [_ dir & rest]] (split-with #(not= % "--to-dir") args)
+        args (concat top rest)]
+    (binding [*dir* dir]
+      (cond (empty? args) ((ns-resolve (doto 'leiningen.help require) 'help)
+                           nil "new")
+            (= ":show" (second args)) (show (first args))
+            :else (apply create args)))))

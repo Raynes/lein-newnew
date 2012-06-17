@@ -94,6 +94,8 @@
 (defn- template-path [name path data]
   (io/file name (render-text path data)))
 
+(def ^{:dynamic true} *dir* nil)
+
 ;; A template, at its core, is meant to generate files and directories that
 ;; represent a project. This is our way of doing that. `->files` is basically
 ;; a mini-DSL for generating files. It takes your mustache template data and
@@ -111,12 +113,13 @@
    be created automatically. Data should include a key for :name so that
    the project is created in the correct directory"
   [{:keys [name] :as data} & paths]
-  (if (.mkdir (io/file name))
-    (doseq [path paths]
-      (if (string? path)
-        (.mkdirs (template-path name path data))
-        (let [[path content] path
-              path (template-path name path data)]
-          (.mkdirs (.getParentFile path))
-          (io/copy content (io/file path)))))
-    (println "Could not create directory " name ". Maybe it already exists?")))
+  (let [dir (or *dir* name)]
+    (if (or *dir* (.mkdir (io/file dir)))
+      (doseq [path paths]
+        (if (string? path)
+          (.mkdirs (template-path dir path data))
+          (let [[path content] path
+                path (template-path dir path data)]
+            (.mkdirs (.getParentFile path))
+            (io/copy content (io/file path)))))
+      (println "Could not create directory " dir ". Maybe it already exists?"))))
