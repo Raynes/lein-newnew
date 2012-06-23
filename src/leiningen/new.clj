@@ -18,6 +18,8 @@
          (catch Exception _))))
 
 (defn abort [& args]
+  (try (require 'leiningen.core.main)
+       (catch FileNotFoundException _))
   (let [abort (or (resolve 'leiningen.core.main/abort)
                   (resolve 'leiningen.core/abort))]
     (apply abort args)))
