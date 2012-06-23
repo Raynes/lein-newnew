@@ -4,7 +4,7 @@ This plugin provides the 'new' task for creating fresh project skeletons from Le
 
 It is extensible via templates and has a simple API for creating them. With this new task, you can create templates for any sort of project scaffolding you can imagine, as simple or complex as you like.
 
-By default, it includes three templates: default, plugin, and template. 'default' is the same as what Leiningen's old 'new' task spits out, while 'plugin' generates a skeleton Leiningen plugin project. 'template' is a very meta template for creating new templates!
+By default, it includes four templates: default, app, plugin, and template. 'default' is for libraries, the same as what Leiningen's old 'new' task spits out. 'app' is for applications, while 'plugin' generates a skeleton Leiningen plugin project. 'template' is a very meta template for creating new templates.
 
 TEMPLATES! WOOT!
 
@@ -33,11 +33,11 @@ This plugin **requires** Leiningen 1.6.2 or later. Please confirm that you have 
 You can pull in a newer version of this plugin than the one that comes with Leiningen 2 if you like; just add it to the `:plugins` section of your `:user` profile in ~/.lein/profiles.clj:
 
 ```clj
-{:user {:plugins [[lein-newnew "0.2.6"]]}}
+{:user {:plugins [[lein-newnew "0.3.4"]]}}
 ```
 
 ## License
 
-Copyright © 2011-2012 Anthony Grimes
+Copyright © 2011-2012 Anthony Grimes and contributors
 
 Distributed under the Eclipse Public License, the same as Clojure.

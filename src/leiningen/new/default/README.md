@@ -1,8 +1,6 @@
 # {{name}}
 
-I'm an app. Or maybe I'm a library? I haven't decided yet. 
-
-The choice is up to you!
+A Clojure library designed to ... well, that part is up to you.
 
 ## Usage
 
