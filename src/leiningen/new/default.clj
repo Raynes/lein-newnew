@@ -1,14 +1,12 @@
 (ns leiningen.new.default
-  "Generate a basic project."
+  "Generate a library project."
   (:use [leiningen.new.templates :only [renderer year project-name
                                         ->files sanitize-ns name-to-path]]))
 
 (defn default
-  "A general project template.
+  "A general project template for libraries.
 
-This template is different from most others in that it supports
-creating a project with a groupId. You can do `lein new foo.bar/baz`
-for example."
+Accepts a group id in the project name: `lein new foo.bar/baz`"
   [name]
   (let [render (renderer "default")
         data {:raw-name name
@@ -17,6 +15,7 @@ for example."
               :nested-dirs (name-to-path name)
               :year (year)}]
     (println "Generating a project called" name "based on the 'default' template.")
+    (println "To see other templates (app, lein plugin, etc), try `lein help new`.")
     (->files data
              ["project.clj" (render "project.clj" data)]
              ["README.md" (render "README.md" data)]
