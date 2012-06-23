@@ -1,5 +1,5 @@
 (ns {{namespace}}.core
-  (:gen-class :main true))
+  (:gen-class))
 
 (defn -main
   "I don't do a whole lot ... yet."
