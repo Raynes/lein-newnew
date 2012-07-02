@@ -16,6 +16,7 @@
     (->files data
              ["project.clj" (render "project.clj" data)]
              ["README.md" (render "README.md" data)]
+             ["doc/intro.md" (render "intro.md" data)]
              [".gitignore" (render "gitignore" data)]
              ["src/{{nested-dirs}}/core.clj" (render "core.clj" data)]
              ["test/{{nested-dirs}}/core_test.clj" (render "test.clj" data)])))
