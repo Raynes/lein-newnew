@@ -1,6 +1,6 @@
 (ns {{namespace}}.core)
 
-(defn -main
+(defn foo
   "I don't do a whole lot."
-  [& args]
-  (println "Hello, World!"))
+  [x]
+  (println x "Hello, World!"))
