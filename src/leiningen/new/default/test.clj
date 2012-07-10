@@ -1,6 +1,6 @@
 (ns {{namespace}}.core-test
   (:use clojure.test
-        {{name}}.core))
+        {{namespace}}.core))
 
 (deftest a-test
   (testing "FIXME, I fail."
