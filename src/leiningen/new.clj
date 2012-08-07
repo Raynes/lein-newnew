@@ -94,9 +94,14 @@
   "Generate scaffolding for a new project based on a template.
 
 If only one argument is passed, the default template is used and the
-argument is treated as if it were the name of the project.
+argument is used as the name of the project.
 
-Use \":show\" instead of a project name to show template details."
+Built-in templates can be shown with `lein help new`, while third-party
+templates are at https://clojars.org/search?q=lein-template. The group-id of
+each result is used as the template name.
+
+Use `lein new $TEMPLATE :show` to see details about a given template."
+
   [& args]
   (let [args (if (or (map? (first args)) (nil? (first args)))
                (rest args)
