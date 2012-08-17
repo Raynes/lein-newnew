@@ -99,14 +99,24 @@
   new
   "Generate scaffolding for a new project based on a template.
 
-If only one argument is passed, the default template is used and the
-argument is used as the name of the project.
+If only one argument is passed to the \"new\" task, the default template
+is used and the argument is used as the name of the project.
 
-Built-in templates can be shown with `lein help new`, while third-party
-templates are at https://clojars.org/search?q=lein-template. The group-id of
-each result is used as the template name.
+If two arguments are passed, the first should be the name of a template,
+and the second is used as the name of the project, for example:
 
-Use `lein new $TEMPLATE :show` to see details about a given template."
+    lein new $TEMPLATE_NAME $PROJECT_NAME
+
+The list of built-in templates can be shown with `lein help new`. Third-party
+templates can be found at https://clojars.org/search?q=lein-template.
+When creating a new project from a third-party template, use its group-id
+as the template name. Note that there's no need to \"install\" a given third-
+party template --- lein will automatically fetch it for you.
+
+Use `lein new $TEMPLATE :show` to see details about a given template.
+
+To create a new template of your own, see the documentation for the
+lein-newnew Leiningin plug-in."
 
   [& args]
   (let [args (if (or (map? (first args)) (nil? (first args)))
