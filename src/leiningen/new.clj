@@ -54,6 +54,12 @@
       (abort "Sorry, names based on non-ironic *jure puns are not allowed."
              "\nIf you intend to use this name ironically, please set the"
              "\nLEIN_IRONIC_JURE environment variable and try again.")
+      (and (re-find #"[A-Z]" name)
+           (not (System/getenv "LEIN_BREAK_CONVENTION")))
+      (abort "Project names containing uppercase letters are not recommended"
+             "\nand will be rejected by repositories like Clojars and Central."
+             "\nIf you're truly unable to use a lowercase name, please set the"
+             "\nLEIN_BREAK_CONVENTION environment variable and try again.")
       (not (symbol? (try (read-string name) (catch Exception _))))
       (abort "Project names must be valid Clojure symbols.")
       :else (apply (resolve-template template) name args))))
