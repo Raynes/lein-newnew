@@ -97,9 +97,9 @@ If only one argument is passed to the \"new\" task, the default template
 is used and the argument is used as the name of the project.
 
 If two arguments are passed, the first should be the name of a template,
-and the second is used as the name of the project:
+and the second is used as the name of the project, for example:
 
-    lein new template-name my-proj
+    lein new {template-name} {proj-name}
 
 The list of built-in templates can be shown with `lein help new`. Third-party
 templates can be found at <https://clojars.org/search?q=lein-template>.
