@@ -107,7 +107,10 @@ When creating a new project from a third-party template, use its group-id
 as the template name. Note that there's no need to \"install\" a given third-
 party template --- lein will automatically fetch it for you.
 
-Use `lein new $TEMPLATE :show` to see details about a given template."
+Use `lein new $TEMPLATE :show` to see details about a given template.
+
+To create a new template of your own, see the documentation for the
+lein-newnew Leiningin plug-in."
 
   [& args]
   (let [args (if (or (map? (first args)) (nil? (first args)))
