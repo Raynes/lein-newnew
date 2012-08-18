@@ -48,9 +48,12 @@ call. For examples to follow, have a look inside [the \*.clj files for
 the built-in
 templates](https://github.com/Raynes/lein-newnew/tree/master/src/leiningen/new).
 
-Templates are very simple. If you wanted to create a template called 'blah', you'd just need to have a file on the classpath at `leiningen/new/blah.clj`. Any mustache templates you intend to use would go in `leiningen/new/blah/`. There isn't really much to talk about. Check out `leiningen.new.templates` for the user-level template-writing API, and check out the simple included templates for examples. When you're ready to write your template, use `lein new template <name>` and hack away!
-
-While developing a template, if you're in the template project lein-newnew will pick it up and you'll be able to test it. However, if you want to use it on your system without putting it on clojars, just `lein install` your template. If you're using Leiningen 1.x, do `lein plugin install mytemplate 0.1.0`; on Leiningen 2.x it will be available automatically.
+While developing a template, if you're in the template project
+lein-newnew will pick it up and you'll be able to test it. However, if
+you want to use it on your system without putting it on clojars, just
+`lein install` your template. If you're using Leiningen 1.x, do `lein
+plugin install mytemplate 0.1.0`; on Leiningen 2.x it will be
+available automatically.
 
 ### Distributing your template
 
