@@ -1,6 +1,6 @@
 (ns {{namespace}}.core)
 
 (defn foo
-  "I don't do a whole lot."
+  "FIXME: Write documentation."
   [x]
   (println x "Hello, World!"))
