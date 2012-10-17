@@ -13,8 +13,9 @@
             [clojure.string :as string]
             [stencil.core :as stencil]))
 
-(println "Using leiningen.new.templates will be depreciated in favor of 
-          leiningen.newnew.gen and leiningen.newnew.utils")
+(println "Leiningen.new.templates will be depreciated in favor of 
+          leiningen.newnew.gen and leiningen.newnew.utils in version 0.4 and above.
+          Please update your templates accordingly.")
 
 (defn project-name
   "Returns project name from (possibly group-qualified) name:

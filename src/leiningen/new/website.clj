@@ -1,6 +1,6 @@
 (ns leiningen.new.website
   (:use [leiningen.newnew.utils :only [year project-name sanitize-ns name-to-path]]
-        [leiningen.newnew.gen :only [<-generate]]))
+        [leiningen.newnew.generate :only [<-generate]]))
 
 (defn website
   "An example template for websites"

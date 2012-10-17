@@ -115,9 +115,9 @@
   ([template dir]
       (list-jar
        (get-jar-path template)
-       (clojure.string/join "/" ["leiningen" "new" template]))))
+       (clojure.string/join "/" ["leiningen" "new" template dir]))))
 
-(list-resources  "noir")
+(list-resources  "noir" "src" )
 
 (.getPath (first (.getURLs cl)))
 (filter (fn [x] (< 0 (.indexOf (.getPath x) "noir/lein-template"))) (seq (.getURLs cl)))

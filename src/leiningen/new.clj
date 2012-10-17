@@ -1,8 +1,9 @@
 (ns leiningen.new
   "Generate project scaffolding based on a template."
   (:refer-clojure :exclude [new list])
-  (:use [leiningen.newnew.generate :only [*dir*]])
-  (:require [bultitude.core :as bultitude])
+  (:use [leiningen.new.templates :only [*dir*]])
+  (:require [bultitude.core :as bultitude]
+            [leiningen.newnew.generate :as gen])
   (:import java.io.FileNotFoundException))
 
 (defn- fake-project [name]
@@ -125,7 +126,7 @@ lein-newnew Leiningin plug-in."
                args)
         [top [_ dir & rest]] (split-with #(not= % "--to-dir") args)
         args (concat top rest)]
-    (binding [*dir* dir]
+    (binding [*dir* dir gen/*dir* dir]
       (cond (empty? args) ((ns-resolve (doto 'leiningen.help require) 'help)
                            nil "new")
             (= ":show" (second args)) (show (first args))
