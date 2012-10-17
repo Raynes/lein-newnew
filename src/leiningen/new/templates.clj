@@ -13,6 +13,9 @@
             [clojure.string :as string]
             [stencil.core :as stencil]))
 
+(println "Using leiningen.new.templates will be depreciated in favor of 
+          leiningen.newnew.gen and leiningen.newnew.utils")
+
 (defn project-name
   "Returns project name from (possibly group-qualified) name:
 
@@ -136,14 +139,9 @@
                          (str inner-dir "/")
                          inner-dir)
           entries      (enumeration-seq (.entries jar))
-          names        (map (fn [x] (.getName x)) entries)
-          names        (filter (fn [x] (= 0 (.indexOf x inner-dir))) names)]
-      (map #(subs % (count inner-dir)) names))))
-
-(defn read-from-jar [jar-path inner-path]
-  (if-let [jar   (JarFile. jar-path)]
-    (if-let [entry (.getJarEntry jar inner-path)]
-      (slurp (.getInputStream jar entry)))))
+          filenames    (map (fn [x] (.getName x)) entries)
+          filenames    (filter (fn [x] (= 0 (.indexOf x inner-dir))) filenames)]
+      (map #(subs % (count inner-dir)) filenames))))
 
 (defn get-jar-path [template-name]
   (let [cl     (.getContextClassLoader (Thread/currentThread))
@@ -158,3 +156,9 @@
   (list-jar 
    (get-jar-path template-name)
    (str "leiningen/new/" template-name)))
+
+
+(defn read-from-jar [jar-path inner-path]
+  (if-let [jar   (JarFile. jar-path)]
+    (if-let [entry (.getJarEntry jar inner-path)]
+      (slurp (.getInputStream jar entry)))))
