@@ -116,10 +116,45 @@
   (let [dir (or *dir* name)]
     (if (or *dir* (.mkdir (io/file dir)))
       (doseq [path paths]
-        (if (string? path)
-          (.mkdirs (template-path dir path data))
+        (cond (string? path)
+              (.mkdirs (template-path dir path data))
+          
+          :else
           (let [[path content] path
                 path (template-path dir path data)]
             (.mkdirs (.getParentFile path))
             (io/copy content (io/file path)))))
       (println "Could not create directory " dir ". Maybe it already exists?"))))
+
+
+;; Directory Rendering:
+
+(import java.util.jar.JarFile)
+(defn list-jar [jar-path inner-dir]
+  (if-let [jar          (JarFile. jar-path)]
+    (let [inner-dir    (if (and (not= "" inner-dir) (not= "/" (last inner-dir)))
+                         (str inner-dir "/")
+                         inner-dir)
+          entries      (enumeration-seq (.entries jar))
+          names        (map (fn [x] (.getName x)) entries)
+          names        (filter (fn [x] (= 0 (.indexOf x inner-dir))) names)]
+      (map #(subs % (count inner-dir)) names))))
+
+(defn read-from-jar [jar-path inner-path]
+  (if-let [jar   (JarFile. jar-path)]
+    (if-let [entry (.getJarEntry jar inner-path)]
+      (slurp (.getInputStream jar entry)))))
+
+(defn get-jar-path [template-name]
+  (let [cl     (.getContextClassLoader (Thread/currentThread))
+        jars   (seq (.getURLs cl))
+        t-name (str template-name "/lein-template")]
+    (->> jars 
+         (filter (fn [x] (< 0 (.indexOf (.getPath x) t-name))))
+         first
+         ((fn [x] (.getPath x))))))
+
+(defn list-resources [template-name]
+  (list-jar 
+   (get-jar-path template-name)
+   (str "leiningen/new/" template-name)))

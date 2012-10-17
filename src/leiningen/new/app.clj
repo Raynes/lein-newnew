@@ -1,6 +1,6 @@
 (ns leiningen.new.app
   "Generate a basic application project."
-  (:use [leiningen.new.templates :only [renderer year project-name
+  (:use [leiningen.newnew.templates :only [renderer year project-name
                                         ->files sanitize-ns name-to-path]]))
 
 (defn app

@@ -1,5 +1,5 @@
 (ns leiningen.new.plugin
-  (:use [leiningen.new.templates :only [renderer sanitize year ->files]]))
+  (:use [leiningen.newnew.templates :only [renderer sanitize year ->files]]))
 
 (defn plugin
   "A leiningen plugin project template."

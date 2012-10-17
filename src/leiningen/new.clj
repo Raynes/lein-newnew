@@ -62,6 +62,7 @@
              "\nLEIN_BREAK_CONVENTION environment variable and try again.")
       (not (symbol? (try (read-string name) (catch Exception _))))
       (abort "Project names must be valid Clojure symbols.")
+
       :else (apply (resolve-template template) name args))))
 
 ;; Since we have our convention of templates always being at
