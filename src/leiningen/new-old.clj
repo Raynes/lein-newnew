@@ -6,54 +6,44 @@
             [leiningen.newnew.generate :as gen])
   (:import java.io.FileNotFoundException))
 
-(defn abort
-  "Compatible with leiningen versions 1 and 2"
-  [& args]
+(defn- fake-project [name]
+  {:templates [[(symbol name "lein-template") "(0.0.0,)"]]
+   :repositories {"clojars" {:url "http://clojars.org/repo/"}
+                  "central" {:url "http://repo1.maven.org/maven2"}}})
+
+(defn resolve-remote-template [name sym]
+  (if-let [get-dep (resolve 'leiningen.core.classpath/resolve-dependencies)]
+    (try (get-dep :templates (fake-project name) :add-classpath? true)
+         (require sym)
+         true
+         (catch Exception _))))
+
+(defn abort [& args]
   (try (require 'leiningen.core.main)
        (catch FileNotFoundException _))
   (let [abort (or (resolve 'leiningen.core.main/abort)
                   (resolve 'leiningen.core/abort))]
     (apply abort args)))
 
-(defn- fake-project
-  "Creates a dummy project for searching the template name on clojars"
-  [name]
-  {:templates [[(symbol name "lein-template") "(0.0.0,)"]]
-   :repositories {"clojars" {:url "http://clojars.org/repo/"}
-                  "central" {:url "http://repo1.maven.org/maven2"}}})
-
-(defn- template-symbol [name]
-  (symbol (str "leiningen.new." name)))
-
-(defn resolve-remote-template [name]
-  (if-let [get-dep (resolve 'leiningen.core.classpath/resolve-dependencies)]
-    (try (get-dep :templates (fake-project name) :add-classpath? true)
-         (require (template-symbol name))
-         true
-         (catch Exception _))))
-
 (defn resolve-template [name]
-  (let [sym    (template-symbol name)
-        res?   (try (require sym)                         ;; find locally
-                    true
-                    (catch FileNotFoundException _))     ;; if failed find remotely
-        res?   (or res? (resolve-remote-template name))]
-    (if res?
+  (let [sym (symbol (str "leiningen.new." name))]
+    (if (try (require sym)
+             true
+             (catch FileNotFoundException _
+               (resolve-remote-template name sym)))
       (resolve (symbol (str sym "/" name)))
       (abort "Could not find template" name "on the classpath."))))
 
-
-;;  We have a bit of convention: we expect that each template is on
+;; A lein-newnew template is actually just a function that generates files and
+;; directories. We have a bit of convention: we expect that each template is on
 ;; the classpath and is based in a .clj file at `leiningen/new/`. Making this
 ;; assumption, a user can simply give us the name of the template he wishes to
 ;; use and we can `require` it without searching the classpath for it or doing
-;; other time consuming things.
-
-;; If this namespace isn't found and we are
+;; other time consuming things. If this namespace isn't found and we are
 ;; running Leiningen 2, we can resolve it via pomegranate first.
-
+;;
 ;; Since our templates are just function calls just like Leiningen tasks, we can
-;; also expect that a template function also be named the same as the
+;; also expect that a template generation function also be named the same as the
 ;; last segment of its namespace. This is what we call to generate the project.
 (defn create
   ([name]
@@ -74,12 +64,7 @@
       (not (symbol? (try (read-string name) (catch Exception _))))
       (abort "Project names must be valid Clojure symbols.")
 
-      :else
-      (let [template-fn  (resolve-template template)
-            result       (apply template-fn name args)]
-        (if (:template result)
-          (gen/render-project result)
-          result)))))
+      :else (apply (resolve-template template) name args))))
 
 ;; Since we have our convention of templates always being at
 ;; `leiningen.new.<template>`, we can easily search the classpath
@@ -100,7 +85,6 @@
         (the-ns)
         (ns-resolve (symbol (last (.split (str n) "\\.")))))))
 
-
 (defn show
   "Show details for a given template."
   [name]
@@ -109,7 +93,6 @@
     (println)
     (println "Argument list:" (or (:help-arglists resolved)
                                   (:arglists resolved)))))
-
 
 (defn ^{:no-project-needed true
         :help-arglists '[[project project-name]
@@ -148,7 +131,3 @@ lein-newnew Leiningin plug-in."
                            nil "new")
             (= ":show" (second args)) (show (first args))
             :else (apply create args)))))
-
-
-;;(create "newnew-test-template" "test")
-;;(def res (create "noir" "tester"))

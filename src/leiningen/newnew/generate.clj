@@ -9,86 +9,129 @@
 ;; * a way to render files written with a flexible template language
 ;; * a way to get those files off of the classpath transparently
 (ns leiningen.newnew.generate
+  (:use [clojure.string :only [split join]])
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
-            [stencil.core :as stencil])
-  (:import java.util.jar.JarFile))
-
-;; It'd be silly to expect people to pull in stencil just to render
-;; a mustache string. We can just provide this function instead. In
-;; doing so, it is much less likely that a template author will have
-;; to pull in any external libraries. Though he is welcome to if he
-;; needs.
-(def render-text stencil/render-string)
-
-
-(defn renderer
-  "Create a renderer function that looks for mustache templates in the
-   right place given the name of your template. If no data is passed, the
-   file is simply slurped and the content returned unchanged."
-  [name]
-  (fn [template & [data]]
-    (let [path (string/join "/" ["leiningen" "new" (sanitize name) template])]
-      (if data
-        (render-text (slurp-resource path) data)
-        (io/reader (io/resource path))))))
-
-(defn- template-path [name path data]
-  (io/file name (render-text path data)))
+            [stencil.core :as stencil]
+            [leiningen.newnew.files :as f]
+            [leiningen.newnew.templates :as t] :reload))
 
 
 
+(import java.io.File)
+(def ^:dynamic *dir* nil)
 
-(def ^{:dynamic true} *dir* nil)
+(defn render-text [txt & [data]]
+  (stencil/render-string txt (or data {})))
 
-(defn <-generate
-  "Generate a file with content. path can be a java.io.File or string.
-   It will be turned into a File regardless. Any parent directories will
-   be created automatically. Data should include a key for :name so that
-   the project is created in the correct directory"
-  [{:keys [name] :as data} & paths]
-  (let [dir (or *dir* name)]
-    (if (or *dir* (.mkdir (io/file dir)))
-      (doseq [path paths]
-        (cond (string? path)
-              (.mkdirs (template-path dir path data))
-          
+(defn render-path [base path & [data]]
+  (str base File/separator (render-text path data)))
+
+(defn make-dir [base path & [data]]
+  (let [dirname (render-path base path data)
+        dir     (io/file dirname)]
+    (if (not (.exists dir))
+      (.mkdirs dir))))
+
+(defn create-file [base [input file-path] & [data]]
+  (let [filename   (render-path base file-path data)
+        file       (File. filename)]
+    (if (not (.exists file))
+      (let [dir-path   (join File/separator (butlast (split file-path #"[/\\]" )))
+            ___dir     (make-dir base dir-path data)
+            ___file    (.createNewFile file)]))
+    file))
+
+(defn make-file [base [input file-path] & [data]]
+  (let [file  (create-file base [input file-path] data)]
+    (io/copy input file)))
+
+(defn render-file [tmpl-name tmpl-jar base [tmpl-path file-path] & [data]]
+  (let [file      (create-file base [tmpl-path file-path] data)
+        tmpl-file (str "leiningen/new/" (t/sanitize tmpl-name) "/" tmpl-path)]
+    (cond (nil? data) (f/transfer-resource tmpl-jar tmpl-file file)
           :else
-          (let [[path content] path
-                path (template-path dir path data)]
-            (.mkdirs (.getParentFile path))
-            (io/copy content (io/file path)))))
-      (println "Could not create directory " dir ". Maybe it already exists?"))))
+          (f/transfer-resource tmpl-jar tmpl-file file
+                               #(render-text % data)))))
 
+(defn render-dir [tmpl-name tmpl-jar base [tmpl-path file-path] & [data]]
+  (let [tmpl-dir (f/format-jar-path
+                  (str "leiningen/new/" (t/sanitize tmpl-name) "/" tmpl-path))
+        tmpl-files    (f/list-jar tmpl-jar tmpl-dir)]
+    (doseq [file tmpl-files]
+      (let [fname_  (apply str (concat file-path File/separator file))
+            fname  (f/format-jar-path (render-path "" fname_ data))]
+        (render-file tmpl-name tmpl-jar base
+                     [file fname] data)))))
+
+(let [[i1 & [i2 & args]] [1 2 3]]
+  (println i1 i2 args))
+
+(defn gen-input-vec [inp]
+  (cond (or (list? inp) (vector? inp))
+        (let [[& [i1 & [i2 & args]]] inp]
+          (cond (nil? i1) (throw (Exception. "There should be at least one argument."))
+                (nil? i2) [i1 i1]
+                ;;except (vector i1 i2)
+                :else [i1 i2]))
+        (instance? String inp) [inp inp]))
+
+(gen-input-vec "1")
+
+(defn render-project
+  [{:keys [data directives] :as template}]
+  (let [dir    (or *dir* name)
+        stages [:copy-dirs  :render-dirs  :make-dirs
+                :copy-files :render-files :make-files]]
+    (cond (or *dir* (.mkdir (io/file dir)))
+          (doseq [stg stages]
+                )
+          )
+  (println "Rendering template using:" )
+  (println template)))
+
+;;(create "newnew-test-template" "tester")
+
+
+
+
+;;
 
 ;; Directory Rendering:
+(comment
 
-(defn list-jar [jar-path inner-dir]
-  (if-let [jar          (JarFile. jar-path)]
-    (let [inner-dir    (if (and (not= "" inner-dir) (not= "/" (last inner-dir)))
-                         (str inner-dir "/")
-                         inner-dir)
-          entries      (enumeration-seq (.entries jar))
-          filenames    (map (fn [x] (.getName x)) entries)
-          filenames    (filter (fn [x] (= 0 (.indexOf x inner-dir))) filenames)]
-      (map #(subs % (count inner-dir)) filenames))))
-
-(defn get-jar-path [template-name]
-  (let [cl     (.getContextClassLoader (Thread/currentThread))
-        jars   (seq (.getURLs cl))
-        t-name (str template-name "/lein-template")]
-    (->> jars 
-         (filter (fn [x] (< 0 (.indexOf (.getPath x) t-name))))
-         first
-         ((fn [x] (.getPath x))))))
-
-(defn list-resources [template-name]
-  (list-jar 
-   (get-jar-path template-name)
-   (str "leiningen/new/" template-name)))
+  (import java.util.jar.JarFile)
+  (def name1 "org.zcaudate/pressi")
+(render-dir  "newnew-test-template"
+             (JarFile. "/Users/Chris/.m2/repository/newnew-test-template/lein-template/0.1.0/lein-template-0.1.0.jar")
+             "new-template"
+             ["" "template"]
+             {:raw-name name1
+              :name (t/project-name name1)
+              :namespace (t/sanitize-ns name1)
+              :nested-dirs (t/name-to-path name1)
+              :year (t/year)})
 
 
-(defn read-from-jar [jar-path inner-path]
-  (if-let [jar   (JarFile. jar-path)]
-    (if-let [entry (.getJarEntry jar inner-path)]
-      (slurp (.getInputStream jar entry)))))
+(render-file "newnew-test-template"
+             (JarFile. "/Users/Chris/.m2/repository/newnew-test-template/lein-template/0.1.0/lein-template-0.1.0.jar")
+             "new-template"
+             ["project.clj" "project.clj"]
+             {:raw-name "hello2"})
+
+
+(def a (File. "hello-there.txt"))
+(.createNewFile a)
+
+(string/split
+ (tpl-path "template" "teot/{{hello}}/tn.txt" {:hello "there"})
+  #"[/\\]")
+
+(render-text  "teot/{{hello}}/tn.txt" {:hello "there"})
+
+(render-path "template" "teot/{{hello}}/tn.txt" {:hello "there"})
+
+(make-file "template" [(slurp "http://www.google.com") "teot/{{hello}}/tn.html"] {:hello "there"})
+
+
+  )
