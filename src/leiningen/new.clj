@@ -78,7 +78,7 @@
       (let [template-fn  (resolve-template template)
             result       (apply template-fn name args)]
         (if (:template result)
-          (gen/render-project result)
+          (gen/render-project template result)
           result)))))
 
 ;; Since we have our convention of templates always being at

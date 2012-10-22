@@ -71,9 +71,11 @@
     (.getInputStream jar entry)))
 
 (defn transfer-resource [jar jar-path out-stream & [func]]
+  ;;(println "**accessing**" jar-path "->" out-stream)
   (if-let [res-stream (jar-resource jar jar-path)]
     (let [input  (cond func (func (slurp res-stream))
                        :else res-stream)]
+      ;;(println "***transfering***" jar-path "->" out-stream)
       (io/copy input out-stream)
       (.close res-stream)
       true)))
