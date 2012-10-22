@@ -6,6 +6,116 @@ It is extensible via templates and has a simple API for creating them. With this
 
 By default, it includes four templates: default, app, plugin, and template. 'default' is for libraries, the same as what Leiningen's old 'new' task spits out. 'app' is for applications, while 'plugin' generates a skeleton Leiningen plugin project. 'template' is a very meta template for creating new templates.
 
+## Updates for version 0.3.8
+
+Templates are a great way to prototype and to setup a project skeleton quickly. When leveraged with the flexibility of leiningen and the power of clojure and a vast java ecosystem.
+
+Writing templates have been simplified from before. Now entire directories can be templated with ease! Although the previous templating sys still work, new templates should be specified in the format described below.
+
+To use a template, eg, a 'blank-angular-website' template just type:
+
+    lein new blank-angular-website my-new-website
+
+The blank website template can be seen at. The layout of this template is very simple:
+
+    /root
+       /src
+         /leiningen
+           /new
+             blank-angular-website.clj    <= template specification
+
+       /resourcs
+         /leiningen
+           /new
+             /blank-angular-website
+                ... all template files... (project.clj, src, resourcs, etc.)
+
+       project.clj
+       .gitignore
+
+so if you were to write your own template 'my-awesome-template', the layout would look something very similar.
+
+    /root
+       /src
+         /leiningen
+           /new
+             my-awesome-template.clj    <= template specification
+
+       /resourcs
+         /leiningen
+           /new
+             /my-awesome-template
+                <all the template files>  <= template files
+
+       project.clj
+       .gitignore
+
+Publishing the template is as simple as typing `lein install` to install the template it on your own path, or if you have `lein-clojars` already setup, type `lein push` for the whole world to be able to access it.
+
+
+### The Specification
+    
+Every template needs this file. 
+
+    /root
+       /src
+         /leiningen
+           /new
+             my-awesome-template.clj    <= template specification
+
+This the the example specification
+
+    (ns leiningen.new.<my-awesome-template>
+      "Generate a basic application project."
+      (:use [leiningen.newnew.templates :only [year project-name
+                                            sanitize-ns name-to-path]]))
+    (defn <my-awesome-template>
+      "An application project template."
+      [name]  
+      {:template true     ;; must be true, to differentiate from old   templating system
+       :data 
+         {:raw-name name
+          :name (project-name name)
+          :namespace (sanitize-ns name)
+          :nested-dirs (name-to-path name)
+          :year (year)}
+       :directives
+         {:render-dirs [["" :except ["resources"]]]  
+          ;; The render-dirs directive renders everything in the directory within the /resources folder. Folder paths that have mustache templates are also rendered.
+          :copy-dirs [["resources"]]
+          ;; This is a directory copy that preserves mustaches
+          }})  
+
+Additional Directives are `make-files`, `make-dirs`, `copy-files`, `render-files` 
+
+If a directory needs to be copied/rendered to an alternative location, just add the location to 
+
+eg.
+
+    :copy-dirs [["src" "src/clojure"]]
+
+will copy all template files under "src" to "src/clojure" in the project directory.
+
+
+Future directives: `commands` (not yet implemented, will allow sh-scripts to be executed)
+
+         
+### How Templating Works
+ 
+When you type:
+
+   lein new my-awesome-template my-new-project
+
+Leiningen will look for the template in 3 places:
+   - your current environment
+   - online in clojars
+   - your own maven repository (still yet to be implemented)
+
+The template must be verified to exist. Once that is done, the jar file containing the template is found.
+
+ leiningen will then generate the template specification and them pass the specification in to the `render-project` function, which will render the template files as directed by the specification.
+
+
 TEMPLATES! WOOT!
 
 ## Writing Templates

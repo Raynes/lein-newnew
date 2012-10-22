@@ -36,8 +36,8 @@
   (let [sym    (template-symbol name)
         res?   (try (require sym)                         ;; find locally
                     true
-                    (catch FileNotFoundException _))     ;; if failed find remotely
-        res?   (or res? (resolve-remote-template name))]
+                    (catch FileNotFoundException _))     
+        res?   (or res? (resolve-remote-template name))]  ;; if failed find remotely
     (if res?
       (resolve (symbol (str sym "/" name)))
       (abort "Could not find template" name "on the classpath."))))

@@ -11,5 +11,6 @@
       :placeholder "{{sanitized}}"
       :year (year)}
    :directives
-     {:render-dirs [["" :except ["src"]]
-                    ["src" "src/leiningen/new"]]}})
+     {:render-dirs [["" :except ["src" "resources"]]
+                    ["src" "src/leiningen/new"]]
+      :copy-dirs ["resources"]}})
