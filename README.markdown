@@ -11,15 +11,20 @@ By default, it includes four templates: default, app, plugin, and template. 'def
 
 ## Updates for version 0.3.8
 
-Templates are a great way to prototype and to setup a project skeleton quickly. When leveraged with the flexibility of leiningen and the power of clojure and a vast java ecosystem.
+Templates are a great way to prototype and to setup a project skeleton quickly. When leveraged with the flexibility of leiningen and the awesomeness of clojure.
 
-Writing templates have been simplified from before. Now entire directories can be templated with ease! Although the previous templating sys still work, new templates should be specified in the format described below.
+Writing templates has been simplified. Now entire directories can be templated with ease! Although the previous templating sys still work, new templates should be specified in the format described below.
 
-To use a template, eg, a 'blank-angular-website' template just type:
+Using a template is still the same. To use a template, eg, a 'blank-angular-website' template just type:
 
     lein new blank-angular-website my-new-website
+    
+then:
 
-The blank website template can be seen at https://github.com/zcaudate/blank-angular-website-template. The layout of this template is very simple:
+    cd my-new-website
+    lein run
+
+The blank website template can be seen at https://github.com/zcaudate/blank-angular-website-template. Note that the template contains angularjs files which also use the mustache syntax and would have been problematic to template in the earlier versions of lein-newnew. The layout of this template is very simple:
 
     /root
        /src
@@ -89,16 +94,15 @@ This the the example specification
           ;; This is a directory copy that preserves mustaches
           }})  
 
-Additional Directives are `make-files`, `make-dirs`, `copy-files`, `render-files` 
+Additional Directives are `make-files`, `new-dirs`, `copy-files` and `render-files`
 
-If a directory needs to be copied/rendered to an alternative location, just add the location to 
+If a directory needs to be copied/rendered to an alternative location, just add the location in the next entry of the vector
 
 eg.
 
     :copy-dirs [["src" "src/clojure"]]
 
-will copy all template files under "src" to "src/clojure" in the project directory.
-
+will copy all template files under "src" to "src/clojure" in the project directory. More sophisticated directives can be seen at https://github.com/zcaudate/newnew-test-template/blob/master/src/leiningen/new/newnew_test_template.clj
 
 Future directives: `commands` (not yet implemented, will allow sh-scripts to be executed)
 
@@ -111,17 +115,12 @@ When you type:
 
 Leiningen will look for the template in 3 places:
    - your current environment
+   - your own maven repository
    - online in clojars
-   - your own maven repository (still yet to be implemented)
-
+  
 The template must be verified to exist. Once that is done, the jar file containing the template is found.
 
  leiningen will then generate the template specification and them pass the specification in to the `render-project` function, which will render the template files as directed by the specification.
-
-
-
-
-
 
 
 

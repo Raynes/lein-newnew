@@ -5,5 +5,4 @@
   :url "https://github.com/Raynes/lein-newnew"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :profiles {:dev {:dependencies [[newnew-test-template/lein-template "0.1.0"]]}}
   :eval-in  :leiningen)
