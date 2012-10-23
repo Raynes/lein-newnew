@@ -86,7 +86,7 @@
 (defn render-project
   [tmpl-name {:keys [data directives] :as template}]
   ;;(println "RENDERING PROJECT")
-  (println data directives)
+  ;;(println data directives)
   (let [dir      (or *dir* (:name data))
         stages   [:copy-dirs  :render-dirs  :make-dirs
                   :copy-files :render-files :make-files]]
