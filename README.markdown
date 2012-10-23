@@ -13,7 +13,7 @@ By default, it includes four templates: default, app, plugin, and template. 'def
 
 Templates are a great way to prototype and to setup a project skeleton quickly. When leveraged with the flexibility of leiningen and the awesomeness of clojure.
 
-Writing templates has been simplified. Now entire directories can be templated with ease! Although the previous templating sys still work, new templates should be specified in the format described below.
+Writing templates has been simplified. Now entire directories can be templated with ease! Although the previous templating system still work, new templates should be specified in the format described below.
 
 Using a template is still the same. To use a template, eg, a 'blank-angular-website' template just type:
 
@@ -30,12 +30,12 @@ The blank website template can be seen at https://github.com/zcaudate/blank-angu
        /src
          /leiningen
            /new
-             blank-angular-website.clj    <= template specification
+             blank_angular_website.clj    <= template specification
 
        /resourcs
          /leiningen
            /new
-             /blank-angular-website
+             /blank_angular_website       <= template files
                 ... all template files... (project.clj, src, resourcs, etc.)
 
        project.clj
@@ -47,12 +47,12 @@ so if you were to write your own template 'my-awesome-template', the layout woul
        /src
          /leiningen
            /new
-             my-awesome-template.clj    <= template specification
+             my_awesome_template.clj    <= template specification
 
        /resourcs
          /leiningen
            /new
-             /my-awesome-template
+             /my_awesome_template         <= template folder
                 <all the template files>  <= template files
 
        project.clj
@@ -69,15 +69,15 @@ Every template needs this file.
        /src
          /leiningen
            /new
-             my-awesome-template.clj    <= template specification
+             my_awesome_template.clj    <= template specification
 
-This the the example specification
+This the the example specification. Note that the file is in `src/leiningen/new/my_awesome_template.clj`; it has a namespace of `leiningen.new.my-awesome-template` and it has one method `leiningen.new.my-awesome-template/my-awesome-template` within the namespace.
 
-    (ns leiningen.new.<my-awesome-template>
+    (ns leiningen.new.my-awesome-template
       "Generate a basic application project."
       (:use [leiningen.newnew.templates :only [year project-name
                                             sanitize-ns name-to-path]]))
-    (defn <my-awesome-template>
+    (defn my-awesome-template
       "An application project template."
       [name]  
       {:template true     ;; must be true, to differentiate from old   templating system
@@ -89,7 +89,7 @@ This the the example specification
           :year (year)}
        :directives
          {:render-dirs [["" :except ["resources"]]]  
-          ;; The render-dirs directive renders everything in the directory within the /resources folder. Folder paths that have mustache templates are also rendered.
+          ;; The render-dirs directive renders everything in the template directory except those in the /resources folder. Folder paths that have mustache templates are also rendered.
           :copy-dirs [["resources"]]
           ;; This is a directory copy that preserves mustaches
           }})  
@@ -102,9 +102,9 @@ eg.
 
     :copy-dirs [["src" "src/clojure"]]
 
-will copy all template files under "src" to "src/clojure" in the project directory. More sophisticated directives can be seen at https://github.com/zcaudate/newnew-test-template/blob/master/src/leiningen/new/newnew_test_template.clj
+will copy all template files under `src` to `src/clojure` in the project directory. More sophisticated directives can be seen at https://github.com/zcaudate/newnew-test-template/blob/master/src/leiningen/new/newnew_test_template.clj
 
-Future directives: `commands` (not yet implemented, will allow sh-scripts to be executed)
+Future directives: `commands` (not yet implemented, will allow shell scripts to be executed)
 
          
 ### How Templating Works
