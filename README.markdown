@@ -4,7 +4,10 @@ This plugin provides the 'new' task for creating fresh project skeletons from Le
 
 It is extensible via templates and has a simple API for creating them. With this new task, you can create templates for any sort of project scaffolding you can imagine, as simple or complex as you like.
 
+TEMPLATES! WOOT!
+
 By default, it includes four templates: default, app, plugin, and template. 'default' is for libraries, the same as what Leiningen's old 'new' task spits out. 'app' is for applications, while 'plugin' generates a skeleton Leiningen plugin project. 'template' is a very meta template for creating new templates.
+
 
 ## Updates for version 0.3.8
 
@@ -16,7 +19,7 @@ To use a template, eg, a 'blank-angular-website' template just type:
 
     lein new blank-angular-website my-new-website
 
-The blank website template can be seen at. The layout of this template is very simple:
+The blank website template can be seen at https://github.com/zcaudate/blank-angular-website-template. The layout of this template is very simple:
 
     /root
        /src
@@ -50,7 +53,7 @@ so if you were to write your own template 'my-awesome-template', the layout woul
        project.clj
        .gitignore
 
-Publishing the template is as simple as typing `lein install` to install the template it on your own path, or if you have `lein-clojars` already setup, type `lein push` for the whole world to be able to access it.
+Publishing the template is as easy as typing `lein install` to install the template it on your own path, or if you have `lein-clojars` already setup, type `lein push` for the whole world to be able to access it.
 
 
 ### The Specification
@@ -116,7 +119,11 @@ The template must be verified to exist. Once that is done, the jar file containi
  leiningen will then generate the template specification and them pass the specification in to the `render-project` function, which will render the template files as directed by the specification.
 
 
-TEMPLATES! WOOT!
+
+
+
+
+
 
 ## Writing Templates
 
