@@ -79,6 +79,9 @@
    right place given the name of your template. If no data is passed, the
    file is simply slurped and the content returned unchanged."
   [name]
+  (println "Leiningen.new.templates will be depreciated in favor of 
+          leiningen.newnew.gen and leiningen.newnew.utils in version 0.4 and above.
+          Please update your templates accordingly.")
   (fn [template & [data]]
     (let [path (string/join "/" ["leiningen" "new" (sanitize name) template])]
       (if data
@@ -116,10 +119,13 @@
   (let [dir (or *dir* name)]
     (if (or *dir* (.mkdir (io/file dir)))
       (doseq [path paths]
-        (if (string? path)
-          (.mkdirs (template-path dir path data))
+        (cond (string? path)
+              (.mkdirs (template-path dir path data))
+          
+          :else
           (let [[path content] path
                 path (template-path dir path data)]
             (.mkdirs (.getParentFile path))
             (io/copy content (io/file path)))))
       (println "Could not create directory " dir ". Maybe it already exists?"))))
+

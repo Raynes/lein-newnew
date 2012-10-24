@@ -4,9 +4,125 @@ This plugin provides the 'new' task for creating fresh project skeletons from Le
 
 It is extensible via templates and has a simple API for creating them. With this new task, you can create templates for any sort of project scaffolding you can imagine, as simple or complex as you like.
 
+TEMPLATES! WOOT!
+
 By default, it includes four templates: default, app, plugin, and template. 'default' is for libraries, the same as what Leiningen's old 'new' task spits out. 'app' is for applications, while 'plugin' generates a skeleton Leiningen plugin project. 'template' is a very meta template for creating new templates.
 
-TEMPLATES! WOOT!
+
+## Updates for version 0.3.8
+
+Templates are a great way to prototype and to setup a project skeleton quickly. When leveraged with the flexibility of leiningen and the awesomeness of clojure.
+
+Writing templates has been simplified. Now entire directories can be templated with ease! Although the previous templating system still work, new templates should be specified in the format described below.
+
+Using a template is still the same. To use a template, eg, a 'blank-angular-website' template just type:
+
+    lein new blank-angular-website my-new-website
+    
+then:
+
+    cd my-new-website
+    lein run
+
+The blank website template can be seen at https://github.com/zcaudate/blank-angular-website. Note that the template contains angularjs files which also use the mustache syntax and would have been problematic to template in the earlier versions of lein-newnew. The layout of this template is very simple:
+
+    /root
+       /src
+         /leiningen
+           /new
+             blank_angular_website.clj    <= template specification
+
+       /resourcs
+         /leiningen
+           /new
+             /blank_angular_website       <= template files
+                ... all template files... (project.clj, src, resourcs, etc.)
+
+       project.clj
+       .gitignore
+
+so if you were to write your own template 'my-awesome-template', the layout would look something very similar.
+
+    /root
+       /src
+         /leiningen
+           /new
+             my_awesome_template.clj    <= template specification
+
+       /resourcs
+         /leiningen
+           /new
+             /my_awesome_template         <= template folder
+                <all the template files>  <= template files
+
+       project.clj
+       .gitignore
+
+Publishing the template is as easy as typing `lein install` to install the template it on your own path, or if you have `lein-clojars` already setup, type `lein push` for the whole world to be able to access it.
+
+
+### The Specification
+    
+Every template needs this file. 
+
+    /root
+       /src
+         /leiningen
+           /new
+             my_awesome_template.clj    <= template specification
+
+This the the example specification. Note that the file is in `src/leiningen/new/my_awesome_template.clj`; it has a namespace of `leiningen.new.my-awesome-template` and it has one method `leiningen.new.my-awesome-template/my-awesome-template` within the namespace.
+
+    (ns leiningen.new.my-awesome-template
+      "Generate a basic application project."
+      (:use [leiningen.newnew.templates :only [year project-name
+                                            sanitize-ns name-to-path]]))
+    (defn my-awesome-template
+      "An application project template."
+      [name]  
+      {:template true     ;; must be true, to differentiate from old   templating system
+       :data 
+         {:raw-name name
+          :name (project-name name)
+          :namespace (sanitize-ns name)
+          :nested-dirs (name-to-path name)
+          :year (year)}
+       :directives
+         {:render-dirs [["" :except ["resources"]]]  
+          ;; The render-dirs directive renders everything in the template directory except those in the /resources folder. Folder paths that have mustache templates are also rendered.
+          :copy-dirs [["resources"]]
+          ;; This is a directory copy that preserves mustaches
+          }})  
+
+Additional Directives are `make-files`, `new-dirs`, `copy-files` and `render-files`
+
+If a directory needs to be copied/rendered to an alternative location, just add the location in the next entry of the vector
+
+eg.
+
+    :copy-dirs [["src" "src/clojure"]]
+
+will copy all template files under `src` to `src/clojure` in the project directory. More sophisticated directives can be seen at https://github.com/zcaudate/newnew-test-template/blob/master/src/leiningen/new/newnew_test_template.clj
+
+Future directives: `commands` (not yet implemented, will allow shell scripts to be executed)
+
+         
+### How Templating Works
+ 
+When you type:
+
+   lein new my-awesome-template my-new-project
+
+Leiningen will look for the template in 3 places:
+   - your current environment
+   - your own maven repository
+   - online in clojars
+  
+The template must be verified to exist. Once that is done, the jar file containing the template is found.
+
+ leiningen will then generate the template specification and them pass the specification in to the `render-project` function, which will render the template files as directed by the specification.
+
+
 
 ## Writing Templates
 
