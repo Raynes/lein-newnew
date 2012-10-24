@@ -24,7 +24,7 @@ then:
     cd my-new-website
     lein run
 
-The blank website template can be seen at https://github.com/zcaudate/blank-angular-website-template. Note that the template contains angularjs files which also use the mustache syntax and would have been problematic to template in the earlier versions of lein-newnew. The layout of this template is very simple:
+The blank website template can be seen at https://github.com/zcaudate/blank-angular-website. Note that the template contains angularjs files which also use the mustache syntax and would have been problematic to template in the earlier versions of lein-newnew. The layout of this template is very simple:
 
     /root
        /src
