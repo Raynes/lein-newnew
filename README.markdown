@@ -1,5 +1,8 @@
 # lein-newnew
 
+## NOTE: This plugin has been merged into Leiningen as of v2.0.0
+
+
 This plugin provides the 'new' task for creating fresh project skeletons from Leiningen 2.x, but is usable from Leiningen 1.x as well.
 
 It is extensible via templates and has a simple API for creating them. With this new task, you can create templates for any sort of project scaffolding you can imagine, as simple or complex as you like.
