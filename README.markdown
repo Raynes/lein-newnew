@@ -1,3 +1,8 @@
+# NOTICE
+
+As of Leiningen 2.0.0, this task is included inside of leiningen's codebase. This plugin will no longer be developed
+and all issues should be opened on [leiningen](https://github.com/technomancy/leiningen)'s issue tracker.
+
 # lein-newnew
 
 This plugin provides the 'new' task for creating fresh project skeletons from Leiningen 2.x, but is usable from Leiningen 1.x as well.
